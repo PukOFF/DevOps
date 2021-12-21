@@ -19,5 +19,6 @@
 ***
 ### Переключение ветки
     git checkout <branch>
+    git switch -c <branch>
 
 ### 
