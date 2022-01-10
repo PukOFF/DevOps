@@ -156,9 +156,13 @@
 10. С учётом ответа на предыдущий вопрос, как создать однократным вызовом touch 100000 файлов? Получится ли аналогичным образом создать 300000? Если нет, то почему?
 	
 		Получится.
-		vagrant@vagrant:~$ {1..30000}
+		vagrant@vagrant:~$ {1..100000}
 		vagrant@vagrant:~$ ls | wc -l
-		30000
+		100000
+		vagrant@vagrant:~$
+		300000 не получится
+		vagrant@vagrant:~$ getconf ARG_MAX
+		2097152
 		vagrant@vagrant:~$ 
 
 ---
@@ -187,17 +191,18 @@
 
 12. Основываясь на знаниях о просмотре текущих (например, PATH) и установке новых переменных; командах, которые мы рассматривали, добейтесь в выводе type -a bash в виртуальной машине наличия первым пунктом в списке:
 
-		vagrant@vagrant:~$ mkdir /tmp/new_path_directory/
-		vagrant@vagrant:~$ cp /bin/bash /tmp/new_path_directory/bash
-		vagrant@vagrant:~$ chmod +x /tmp/new_path_directory/bash
-		vagrant@vagrant:~$ type -a bash
+		vagrant@vagrant:~/test$ mkdir /tmp/new_path_directory/
+		vagrant@vagrant:~/test$ cp /bin/bash /tmp/new_path_directory/bash
+		vagrant@vagrant:~/test$ chmod +x /tmp/new_path_directory/bash
+		vagrant@vagrant:~/test$ type -a bash
 		bash is /usr/bin/bash
 		bash is /bin/bash
-		vagrant@vagrant:~$ export PATH=$PATH:/tmp/new_path_directory/
-		vagrant@vagrant:~$ type -a bash
-		bash is /usr/bin/bash
-		bash is /bin/bash
+		vagrant@vagrant:~/test$ export PATH=/tmp/new_path_directory/:$PATH
+		vagrant@vagrant:~/test$ type -a bash
 		bash is /tmp/new_path_directory/bash
-		vagrant@vagrant:~$ 
+		bash is /usr/bin/bash
+		bash is /bin/bash
+		vagrant@vagrant:~/test$ 
+ 
 
 13. Команда at используется для назначения одноразового задания на заданное время, а команда batch — для назначения одноразовых задач, которые должны выполняться, когда загрузка системы становится меньше 0,8
