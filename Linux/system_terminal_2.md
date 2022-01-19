@@ -30,56 +30,27 @@
 
         vagrant@test:~$ tty
         /dev/pts/0
-        vagrant@test:~$ ls -l / > /dev/pts/1
-        vagrant@test:~$
+        vagrant@test:~$ ls /root 2> /dev/pts/1
+        vagrant@test:~$ 
         =====================================
         vagrant@test:~$ tty
         /dev/pts/1
-        vagrant@test:~$ total 2009700
-        lrwxrwxrwx   1 root    root             7 Aug 24 08:41 bin -> usr/bin
-        drwxr-xr-x   4 root    root          4096 Dec 19 19:46 boot
-        drwxr-xr-x   2 root    root          4096 Dec 19 19:38 cdrom
-        drwxr-xr-x  19 root    root          3980 Jan 16 12:32 dev
-        drwxr-xr-x  98 root    root          4096 Jan 10 20:38 etc
-        drwxr-xr-x   3 root    root          4096 Dec 19 19:42 home
-        lrwxrwxrwx   1 root    root             7 Aug 24 08:41 lib -> usr/lib
-        lrwxrwxrwx   1 root    root             9 Aug 24 08:41 lib32 -> usr/lib32
-        lrwxrwxrwx   1 root    root             9 Aug 24 08:41 lib64 -> usr/lib64
-        lrwxrwxrwx   1 root    root            10 Aug 24 08:41 libx32 -> usr/libx32
-        drwx------   2 root    root         16384 Dec 19 19:37 lost+found
-        drwxr-xr-x   2 root    root          4096 Aug 24 08:42 media
-        drwxr-xr-x   2 root    root          4096 Aug 24 08:42 mnt
-        drwxr-xr-x   3 root    root          4096 Dec 19 19:45 opt
-        dr-xr-xr-x 158 root    root             0 Jan 16 12:32 proc
-        drwx------   4 root    root          4096 Dec 19 19:42 root
-        drwxr-xr-x  27 root    root           840 Jan 16 15:07 run
-        lrwxrwxrwx   1 root    root             8 Aug 24 08:41 sbin -> usr/sbin
-        drwxr-xr-x   7 root    root          4096 Jan 10 20:38 snap
-        drwxr-xr-x   2 root    root          4096 Aug 24 08:42 srv
-        -rw-------   1 root    root    2057306112 Dec 19 19:38 swap.img
-        dr-xr-xr-x  13 root    root             0 Jan 16 12:32 sys
-        drwxrwxrwt  10 root    root          4096 Jan 16 12:42 tmp
-        drwxr-xr-x  15 root    root          4096 Aug 24 08:46 usr
-        drwxr-xr-x   1 vagrant vagrant     552960 Jan 10 20:37 vagrant
-        drwxr-xr-x  13 root    root          4096 Aug 24 08:47 var
+        vagrant@test:~$ ls: cannot open directory '/root': Permission denied
 
 ***
 
 5. Получится ли одновременно передать команде файл на stdin и вывести ее stdout в другой файл? Приведите работающий пример
     
-        vagrant@test:~$ cat /var/log/syslog | head -n 10 > test.log
-        vagrant@test:~$ cat test.log 
-        Jan 16 12:32:38 test rsyslogd: [origin software="rsyslogd" swVersion="8.2001.0" x-pid="625" x-info="https://www.rsyslog.com"] rsyslogd was HUPed
-        Jan 16 12:32:38 test systemd[1]: logrotate.service: Succeeded.
-        Jan 16 12:32:38 test systemd[1]: Finished Rotate log files.
-        Jan 16 12:32:38 test systemd[1]: Started OpenBSD Secure Shell server.
-        Jan 16 12:32:38 test polkitd[688]: started daemon version 0.105 using authority implementation `local' version `0.105'
-        Jan 16 12:32:38 test dbus-daemon[618]: [system] Successfully activated service 'org.freedesktop.PolicyKit1'
-        Jan 16 12:32:38 test systemd[1]: Started Authorization Manager.
-        Jan 16 12:32:38 test accounts-daemon[614]: started daemon version 0.6.55
-        Jan 16 12:32:38 test systemd[1]: Started Accounts Service.
-        Jan 16 12:32:38 test snapd[628]: AppArmor status: apparmor is enabled and all features are available
-        vagrant@test:~$ 
+        vagrant@test:~$ ls
+        stdin.txt  test.sh
+        vagrant@test:~$ cat stdin.txt 
+        Test Message
+        vagrant@test:~$ cat < stdin.txt > stdout.txt
+        vagrant@test:~$ ls
+        stdin.txt  stdout.txt  test.sh
+        vagrant@test:~$ cat stdout.txt 
+        Test Message
+        vagrant@test:~$  
 
 ***
 
@@ -139,43 +110,25 @@
 
 8. Получится ли в качестве входного потока для pipe использовать только stderr команды, не потеряв при этом отображение stdout на pty? Напоминаем: по умолчанию через pipe передается только stdout команды слева от | на stdin команды справа. Это можно сделать, поменяв стандартные потоки местами через промежуточный новый дескриптор, который вы научились создавать в предыдущем вопросе
 
-        vagrant@test:~$ cat test.sh 
-        #!/bin/sh
-        rm error.log
-        for dir in `ls /`
-        do
-        echo Directory[$dir] files: `ls /$dir 2>>error.log | wc -l`
-        done
-        vagrant@test:~$ ./test.sh 
-        Directory[bin] objects: 992
-        Directory[boot] objects: 10
-        Directory[cdrom] objects: 0
-        Directory[dev] objects: 197
-        Directory[etc] objects: 179
-        Directory[home] objects: 1
-        Directory[lib] objects: 96
-        Directory[lib32] objects: 0
-        Directory[lib64] objects: 1
-        Directory[libx32] objects: 0
-        Directory[lost+found] objects: 0
-        Directory[media] objects: 0
-        Directory[mnt] objects: 0
-        Directory[opt] objects: 1
-        Directory[proc] objects: 168
-        Directory[root] objects: 0
-        Directory[run] objects: 42
-        Directory[sbin] objects: 405
-        Directory[snap] objects: 6
-        Directory[srv] objects: 0
-        Directory[swap.img] objects: 1
-        Directory[sys] objects: 11
-        Directory[tmp] objects: 6
-        Directory[usr] objects: 13
-        Directory[vagrant] objects: 2
-        Directory[var] objects: 13
-        vagrant@test:~$ cat error.log 
-        ls: cannot open directory '/lost+found': Permission denied
-        ls: cannot open directory '/root': Permission denied
+        vagrant@test:~$ ls -l /proc/$$/fd/
+        total 0
+        lrwx------ 1 vagrant vagrant 64 Jan 19 20:28 0 -> /dev/pts/0
+        lrwx------ 1 vagrant vagrant 64 Jan 19 20:28 1 -> /dev/pts/0
+        lrwx------ 1 vagrant vagrant 64 Jan 19 20:28 2 -> /dev/pts/0
+        lrwx------ 1 vagrant vagrant 64 Jan 19 20:28 255 -> /dev/pts/0
+        lrwx------ 1 vagrant vagrant 64 Jan 19 20:28 5 -> /dev/pts/0
+        vagrant@test:~$ ls -l && test1 5>&1 1>&2 2>&5
+        total 12
+        -rw-rw-r-- 1 vagrant vagrant  13 Jan 19 20:11 stdin.txt
+        -rw-rw-r-- 1 vagrant vagrant  13 Jan 19 20:23 stdout.txt
+        -rwxrw-r-- 1 vagrant vagrant 112 Jan 16 17:35 test.sh
+        bash: test1: command not found
+        vagrant@test:~$ ls -l && test1 5>&1 1>&2 2>&5 | wc -l
+        total 12
+        -rw-rw-r-- 1 vagrant vagrant  13 Jan 19 20:11 stdin.txt
+        -rw-rw-r-- 1 vagrant vagrant  13 Jan 19 20:23 stdout.txt
+        -rwxrw-r-- 1 vagrant vagrant 112 Jan 16 17:35 test.sh
+        1
         vagrant@test:~$ 
 
 ***
