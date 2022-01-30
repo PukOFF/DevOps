@@ -50,7 +50,26 @@
 ***
     
 3. Предположим, приложение пишет лог в текстовый файл. Этот файл оказался удален (deleted в lsof), однако возможности сигналом сказать приложению переоткрыть файлы или просто перезапустить приложение – нет. Так как приложение продолжает писать в удаленный файл, место на диске постепенно заканчивается. Основываясь на знаниях о перенаправлении потоков предложите способ обнуления открытого удаленного файла (чтобы освободить место на файловой системе).
-
+    ```bash
+    vagrant@test:~$ ping 127.0.0.1 > test.log &
+    [1] 1261
+    vagrant@test:~$ lsof -p 1261
+    COMMAND  PID    USER   FD      TYPE DEVICE SIZE/OFF NODE NAME
+    ping    1261 vagrant  cwd   unknown                      /proc/1261/cwd (readlink: Permission denied)
+    ping    1261 vagrant  rtd   unknown                      /proc/1261/root (readlink: Permission denied)
+    ping    1261 vagrant  txt   unknown                      /proc/1261/exe (readlink: Permission denied)
+    ping    1261 vagrant NOFD                                /proc/1261/fd (opendir: Permission denied)
+    vagrant@test:~$ sudo lsof -p 1261 | grep test.log
+    ping    1261 vagrant    1w   REG  253,0     2882 1048606 /home/vagrant/test.log
+    vagrant@test:~$ sudo ls -l /proc/1261/fd/
+    total 0
+    lrwx------ 1 root root 64 Jan 30 19:58 0 -> /dev/pts/0
+    l-wx------ 1 root root 64 Jan 30 19:58 1 -> /home/vagrant/test.log
+    lrwx------ 1 root root 64 Jan 30 19:58 2 -> /dev/pts/0
+    lrwx------ 1 root root 64 Jan 30 19:58 3 -> 'socket:[27982]'
+    lrwx------ 1 root root 64 Jan 30 19:58 4 -> 'socket:[27983]'
+    vagrant@test:~$ 
+    ```
 ***
 
 4 Занимают ли зомби-процессы какие-то ресурсы в ОС (CPU, RAM, IO)?
@@ -63,7 +82,9 @@
     root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
     /usr/sbin/opensnoop-bpfcc
     ```
+
     ***
+    
     ```bash
     vagrant@test:~$ sudo -s
     root@test:/home/vagrant# timeout 5 opensnoop-bpfcc
@@ -97,26 +118,23 @@
     Hi
     root@netology1:~# test -d /tmp/some_dir && echo Hi
     root@netology1:~#
-    ```
-    ***
-    ```bash
+    
     root@netology1:~# test -d /tmp/some_dir; echo Hi - комнады выполняются независимо.
     root@netology1:~# test -d /tmp/some_dir && echo Hi - вторая команда выполнится только в случае успешного результат первой команды
-    ```
-    ***
-    ```bash
+    
     vagrant@test:~$ ls /root ; ls /home
     ls: cannot open directory '/root': Permission denied
     vagrant
     vagrant@test:~$ ls /root && ls /home
     ls: cannot open directory '/root': Permission denied
     vagrant@test:~$
-    ```
+    
     Есть ли смысл использовать в bash `&&`, если применить `set -e`?
     Нет.
-    ```bash
+    
     set -e - Выйти немедленно, если команда завершается с ненулевым статусом
     ```
+
 ***
 
 8. Из каких опций состоит режим bash `set -euxo pipefail` и почему его хорошо было бы использовать в сценариях?
