@@ -97,4 +97,4 @@ SSH(22), Web Server (80/443), DNS(53)
 
 5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали.
 
-[Test](https://github.com/PukOFF/DevOps/Linux/blob/main/scheme.xml)
+**[Scheme](https://github.com/PukOFF/DevOps/blob/main/Linux/scheme.xml)
