@@ -1,7 +1,7 @@
 Домашнее задание к занятию "3.9. Элементы безопасности информационных систем"
 1. Установите Bitwarden плагин для браузера. Зарегестрируйтесь и сохраните несколько паролей.
 
-[Bitwarden](https://github.com/PukOFF/DevOps/blob/main/Linux/bitwarde.png)
+[Bitwarden](https://github.com/PukOFF/DevOps/blob/main/Linux/bitwarden.png)
 
 ***
 
