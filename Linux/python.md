@@ -127,20 +127,15 @@ print('='*50)
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-==================================================
-vagrant@dev:~$ vim dns_check.py
 vagrant@dev:~$ ./dns_check.py 
 drive.google.com - 142.250.150.194
 mail.google.com - 64.233.165.17
 google.com - 64.233.165.102
-test_site - 127.0.0.10
 ==================================================
-vagrant@dev:~$ vim dns_check.py
 vagrant@dev:~$ ./dns_check.py 
 drive.google.com - 142.250.150.194
 mail.google.com - 64.233.165.17
 [ERROR] google.com IP mismatch OLD: 64.233.165.102 NEW: 64.233.165.101
-test_site - 127.0.0.10
 ==================================================
 ```
 
