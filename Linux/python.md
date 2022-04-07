@@ -89,12 +89,59 @@ vagrant@dev:~$
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+
+import socket
+import os
+import pickle
+
+def check_dns(hosts):
+    dictionary = {}
+    for hostname in hosts:
+        dictionary[hostname] = socket.gethostbyname(hostname)
+    return(dictionary)
+
+def write_to_file(data):
+    with open('data.pickle','wb') as f:
+        pickle.dump(data,f)
+
+def read_from_file():
+    with open('data.pickle','rb') as f:
+        data = pickle.load(f)
+        return data
+
+sites = ('drive.google.com', 'mail.google.com', 'google.com')
+
+old_dict = read_from_file()
+new_dict = check_dns(sites)
+
+for host in sites:
+    if old_dict[host] == new_dict[host]:
+        print('{} - {}'.format(host, old_dict[host]))
+    else:
+        print('[ERROR] {} IP mismatch [OLD]: {} [NEW]: {}'.format(host, old_dict[host], new_dict[host]))
+
+print('='*50)
+
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+==================================================
+vagrant@dev:~$ vim dns_check.py
+vagrant@dev:~$ ./dns_check.py 
+drive.google.com - 142.250.150.194
+mail.google.com - 64.233.165.17
+google.com - 64.233.165.102
+test_site - 127.0.0.10
+==================================================
+vagrant@dev:~$ vim dns_check.py
+vagrant@dev:~$ ./dns_check.py 
+drive.google.com - 142.250.150.194
+mail.google.com - 64.233.165.17
+[ERROR] google.com IP mismatch OLD: 64.233.165.102 NEW: 64.233.165.101
+test_site - 127.0.0.10
+==================================================
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
