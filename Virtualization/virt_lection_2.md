@@ -80,6 +80,84 @@ alex@AlexPC:~/Vagrant$
 
 - Создать виртуальную машину.
 - Зайти внутрь ВМ, убедиться, что Docker установлен с помощью команды
+
 ```
 docker ps
+```
+
+```bash
+alex@AlexPC:~/Vagrant$ vagrant up
+Bringing machine 'server1.netology' up with 'virtualbox' provider...
+==> server1.netology: Clearing any previously set forwarded ports...
+==> server1.netology: Clearing any previously set network interfaces...
+==> server1.netology: Preparing network interfaces based on configuration...
+    server1.netology: Adapter 1: nat
+==> server1.netology: Forwarding ports...
+    server1.netology: 22 (guest) => 20011 (host) (adapter 1)
+    server1.netology: 22 (guest) => 2222 (host) (adapter 1)
+==> server1.netology: Running 'pre-boot' VM customizations...
+==> server1.netology: Booting VM...
+==> server1.netology: Waiting for machine to boot. This may take a few minutes...
+    server1.netology: SSH address: 127.0.0.1:2222
+    server1.netology: SSH username: vagrant
+    server1.netology: SSH auth method: private key
+==> server1.netology: Machine booted and ready!
+==> server1.netology: Checking for guest additions in VM...
+==> server1.netology: Setting hostname...
+==> server1.netology: Mounting shared folders...
+    server1.netology: /vagrant => /home/alex/Vagrant
+==> server1.netology: Running provisioner: ansible...
+    server1.netology: Running ansible-playbook...
+
+PLAY [nodes] *******************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [server1.netology]
+
+TASK [Create directory for ssh-keys] *******************************************
+ok: [server1.netology]
+
+TASK [Adding rsa-key in /root/.ssh/authorized_keys] ****************************
+ok: [server1.netology]
+
+TASK [Checking DNS] ************************************************************
+changed: [server1.netology]
+
+TASK [Installing tools] ********************************************************
+ok: [server1.netology] => (item=git)
+ok: [server1.netology] => (item=curl)
+
+TASK [Installing docker] *******************************************************
+changed: [server1.netology]
+
+TASK [Add the current user to docker group] ************************************
+ok: [server1.netology]
+
+PLAY RECAP *********************************************************************
+server1.netology           : ok=7    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
+
+
+alex@AlexPC:~/Vagrant$ vagrant ssh
+Welcome to Ubuntu 20.04.3 LTS (GNU/Linux 5.4.0-91-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Mon 09 May 2022 12:52:53 PM UTC
+
+  System load:  0.0                Processes:                111
+  Usage of /:   13.9% of 30.88GB   Users logged in:          0
+  Memory usage: 22%                IPv4 address for docker0: 172.17.0.1
+  Swap usage:   0%                 IPv4 address for eth0:    10.0.2.15
+
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+Last login: Mon May  9 12:48:42 2022 from 10.0.2.2
+vagrant@server1:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+vagrant@server1:~$ docker --version
+Docker version 20.10.15, build fd82621
+vagrant@server1:~$ 
 ```
