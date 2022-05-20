@@ -51,13 +51,22 @@ Hey, Netology
 Сценарий:
 
 - Высоконагруженное монолитное java веб-приложение;
+Лучше использовать виртуальный сервер, так как требуется работа с высоконагруженным приложением.
 - Nodejs веб-приложение;
+Для данной задачи Docker контейнер подходит, так как необходимо постоянно тестировать и деплоить нофые функции приложения.
 - Мобильное приложение c версиями для Android и iOS;
+Для данной задачи Docker контейнер подходит, так как требуется несколько сред для разных версий ОС.
 - Шина данных на базе Apache Kafka;
+Виртуальный или физический сервер
 - Elasticsearch кластер для реализации логирования продуктивного веб-приложения - три ноды elasticsearch, два logstash и две ноды kibana;
+Для данной задачи Docker контейнер подходит идеально, так как позволяет изолировать данное приложение.
 - Мониторинг-стек на базе Prometheus и Grafana;
+Лучше использовать виртуальный сервер, так как требуется отказоустойчивое решение.
 - MongoDB, как основное хранилище данных для java-приложения;
+Для данной задачи Docker контейнер подходит идеально, так как позволяет изолировать приложение (в данном случае БД) от других приложений.
 - Gitlab сервер для реализации CI/CD процессов и приватный (закрытый) Docker Registry.
+Виртуальный сервер
+
 
 ## Задача 3
 
@@ -67,8 +76,58 @@ Hey, Netology
 - Добавьте еще один файл в папку ```/data``` на хостовой машине;
 - Подключитесь во второй контейнер и отобразите листинг и содержание файлов в ```/data``` контейнера.
 
+```bash
+lex@userver:~$ docker run -dit --name centos -v ~/data:/data centos:latest
+e44575b56f92f266033aa6a6e9a75070d452d4053c040b02a875fde8339dfa67
+lex@userver:~$ docker ps -a
+CONTAINER ID   IMAGE              COMMAND                  CREATED          STATUS                            PORTS                                   NAMES
+e44575b56f92   centos:latest      "/bin/bash"              6 seconds ago    Up 5 seconds                                                              centos
+731555b822a5   debian:latest      "bash"                   20 minutes ago   Exited (137) About a minute ago                                           debian
+3588b0d156c4   pukoff/nginx:0.1   "/docker-entrypoint.…"   3 days ago       Up 3 days                         0.0.0.0:8080->80/tcp, :::8080->80/tcp   web
+lex@userver:~$ docker rm debian
+debian
+lex@userver:~$ docker run -dit --name debian -v ~/data:/data debian:latest
+a800b719c367a04d8ceaddd23c5a522cf3fd1e02fa768e2ab801cb44938068ce
+lex@userver:~$ docker ps -a
+CONTAINER ID   IMAGE              COMMAND                  CREATED          STATUS          PORTS                                   NAMES
+a800b719c367   debian:latest      "bash"                   2 seconds ago    Up 1 second                                             debian
+e44575b56f92   centos:latest      "/bin/bash"              37 seconds ago   Up 36 seconds                                           centos
+3588b0d156c4   pukoff/nginx:0.1   "/docker-entrypoint.…"   3 days ago       Up 3 days       0.0.0.0:8080->80/tcp, :::8080->80/tcp   web
+lex@userver:~$ docker exec centos /bin/bash
+lex@userver:~$ docker exec -it centos bash
+[root@e44575b56f92 /]# ls
+bin  data  dev  etc  home  lib  lib64  lost+found  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+[root@e44575b56f92 /]# exit
+exit
+lex@userver:~$ docker exec -it debian bash
+root@a800b719c367:/# ls
+bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@a800b719c367:/# exit
+exit
+lex@userver:~$ docker exec -it centos bash
+[root@e44575b56f92 /]# touch test.txt
+[root@e44575b56f92 /]# ls /data
+host.txt
+[root@e44575b56f92 /]# exit
+exit
+lex@userver:~$ docker exec -it debian bash
+root@a800b719c367:/# ls /data
+root@a800b719c367:/# exit
+exit
+lex@userver:~$ touch data/host.txt
+lex@userver:~$ docker exec -it debian bash
+root@a800b719c367:/# ls /data/
+host.txt
+root@a800b719c367:/#
+
+```
+
+
+
 ## Задача 4 (*)
 
 Воспроизвести практическую часть лекции самостоятельно.
 
 Соберите Docker образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
+
+**Public link** - https://hub.docker.com/r/pukoff/ansible
