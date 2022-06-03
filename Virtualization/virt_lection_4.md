@@ -10,7 +10,7 @@
 - Скриншот страницы, как на слайде из презентации (слайд 32).
 
 <p align="center">
-  <img width="1200" height="600" src="./yc_01.png">
+  <img width="1200" height="600" src="./images/yc_01.png">
 </p>
 
 ## Задача 2
