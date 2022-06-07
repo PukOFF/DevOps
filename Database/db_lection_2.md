@@ -53,9 +53,87 @@ root@d21a2380e245:/#
 
 Приведите:
 - итоговый список БД после выполнения пунктов выше,
+```sql
+test_db-# \d
+                  List of relations
+ Schema |      Name      |   Type   |      Owner      
+--------+----------------+----------+-----------------
+ public | clients        | table    | test-admin-user
+ public | clients_id_seq | sequence | test-admin-user
+ public | orders         | table    | test-admin-user
+ public | orders_id_seq  | sequence | test-admin-user
+(4 rows)
+```
+
 - описание таблиц (describe)
+```sql
+select table_name, column_name, data_type from information_schema.columns where table_name = 'orders'
+Name       |Value  |
+-----------+-------+
+table_name |orders |
+column_name|id     |
+data_type  |integer|
+
+select table_name, column_name, data_type from information_schema.columns where table_name = 'clients'
+Name       |Value  |
+-----------+-------+
+table_name |clients|
+column_name|id     |
+data_type  |integer|
+=====================================================================================================================================================
+test_db=# \d+ orders
+                                                     Table "public.orders"
+   Column   |     Type      | Collation | Nullable |              Default               | Storage  | Stats target | Description 
+------------+---------------+-----------+----------+------------------------------------+----------+--------------+-------------
+ id         | integer       |           | not null | nextval('orders_id_seq'::regclass) | plain    |              | 
+ order_name | character(20) |           |          |                                    | extended |              | 
+ order_cost | integer       |           |          |                                    | plain    |              | 
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "clients" CONSTRAINT "clients_client_order_fkey" FOREIGN KEY (client_order) REFERENCES orders(id)
+Access method: heap
+=====================================================================================================================================================
+test_db=# \d+ clients
+                                                        Table "public.clients"
+     Column      |     Type      | Collation | Nullable |               Default               | Storage  | Stats target | Description 
+-----------------+---------------+-----------+----------+-------------------------------------+----------+--------------+-------------
+ id              | integer       |           | not null | nextval('clients_id_seq'::regclass) | plain    |              | 
+ client_lastname | character(20) |           |          |                                     | extended |              | 
+ client_country  | character(20) |           |          |                                     | extended |              | 
+ client_order    | integer       |           |          |                                     | plain    |              | 
+Indexes:
+    "clients_pkey" PRIMARY KEY, btree (id)
+    "country" UNIQUE, btree (client_country)
+Foreign-key constraints:
+    "clients_client_order_fkey" FOREIGN KEY (client_order) REFERENCES orders(id)
+Access method: heap
+
+test_db=# 
+=====================================================================================================================================================
+
+```
 - SQL-запрос для выдачи списка пользователей с правами над таблицами test_db
+
+```sql
+select * from pg_catalog.pg_user
+```
+
 - список пользователей с правами над таблицами test_db
+```sql
+test_db-# \dp
+                                                Access privileges
+ Schema |      Name      |   Type   |              Access privileges              | Column privileges | Policies 
+--------+----------------+----------+---------------------------------------------+-------------------+----------
+ public | clients        | table    | "test-admin-user"=arwdDxt/"test-admin-user"+|                   | 
+        |                |          | "test-simple-user"=arwd/"test-admin-user"   |                   | 
+ public | clients_id_seq | sequence |                                             |                   | 
+ public | orders         | table    | "test-admin-user"=arwdDxt/"test-admin-user"+|                   | 
+        |                |          | "test-simple-user"=arwd/"test-admin-user"   |                   | 
+ public | orders_id_seq  | sequence |                                             |                   | 
+(4 rows)
+```
+
 
 ## Задача 3
 
@@ -82,7 +160,19 @@ root@d21a2380e245:/#
 |Ritchie Blackmore| Russia|
 
 Используя SQL синтаксис:
-- вычислите количество записей для каждой таблицы 
+- вычислите количество записей для каждой таблицы
+```sql
+select count (id) from clients
+Name |Value|
+-----+-----+
+count|5    |
+
+select count (id) from orders
+Name |Value|
+-----+-----+
+count|5    |
+```
+
 - приведите в ответе:
     - запросы 
     - результаты их выполнения.
@@ -100,15 +190,48 @@ root@d21a2380e245:/#
 |Иоганн Себастьян Бах| Гитара |
 
 Приведите SQL-запросы для выполнения данных операций.
+```sql
+update clients set client_order = 3 where client_lastname = 'Иванов Иван Иванович'
+update clients set client_order = 4 where client_lastname = 'Петров Петр Петрович'
+update clients set client_order = 5 where client_lastname = 'Иоганн Себастьян Бах'
+```
 
 Приведите SQL-запрос для выдачи всех пользователей, которые совершили заказ, а также вывод данного запроса.
  
+```sql
+select * from clients where client_order is not null
+
+id|client_lastname     |client_country      |client_order
+--+--------------------+--------------------+------------
+ 1|Иванов Иван Иванович|USA                 |           3
+ 2|Петров Петр Петрович|Canada              |           4
+ 3|Иоганн Себастьян Бах|Japan               |           5
+```
+
 Подсказк - используйте директиву `UPDATE`.
 
 ## Задача 5
 
 Получите полную информацию по выполнению запроса выдачи всех пользователей из задачи 4 
 (используя директиву EXPLAIN).
+
+```sql
+explain select * from clients where client_order is not null
+
+
+QUERY PLAN                                             |
+-------------------------------------------------------+
+Seq Scan on clients  (cost=0.00..1.05 rows=5 width=176)|
+  Filter: (client_order IS NOT NULL)                   |
+```
+
+**cost** - Приблизительная стоимость запуска. Это время, которое проходит, прежде чем начнётся этап вывода данных, например для сортирующего узла это время сортировки.
+
+**rows** - Ожидаемое число строк, которое должен вывести этот узел плана. При этом так же предполагается, что узел выполняется до конца.
+
+**width** - Ожидаемый средний размер строк, выводимых этим узлом плана (в байтах).
+
+Общая оценка "стоимости" запроса по времени и ресурсам. Позволяет оценить насколько корректно и точно создан запрос.
 
 Приведите получившийся результат и объясните что значат полученные значения.
 
@@ -123,3 +246,137 @@ root@d21a2380e245:/#
 Восстановите БД test_db в новом контейнере.
 
 Приведите список операций, который вы применяли для бэкапа данных и восстановления. 
+
+```bash
+root@32d7de5c539f:/# pg_dump test_db -U test-admin-user > /data/volume1/test_db.sql
+root@32d7de5c539f:/# exit
+exit
+lex@userver:~/Docker$ docker volume list
+DRIVER    VOLUME NAME
+local     37685cbaa0614c981ab4a0795c184a191ac2df20c63c3ce7634380feb48ec3f4
+local     volume1
+local     volume2
+lex@userver:~/Docker$
+
+lex@userver:~/Docker$ docker stop postgres
+postgres
+
+lex@userver:~/Docker$ docker ps -a
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS                     PORTS                                       NAMES
+32d7de5c539f   postgres:12         "docker-entrypoint.s…"   2 hours ago     Exited (0) 1 minutes ago                                               postgres
+0a81efbe8eda   pukoff/ansible:v1   "ansible-playbook --…"   2 weeks ago     Exited (0) 2 weeks ago                                                 serene_herschel
+a800b719c367   debian:latest       "bash"                   2 weeks ago     Exited (137) 2 hours ago                                               debian
+e44575b56f92   centos:latest       "/bin/bash"              2 weeks ago     Exited (0) 2 hours ago                                                 centos
+lex@userver:~/Docker$ docker ps -a
+CONTAINER ID   IMAGE               COMMAND                  CREATED       STATUS                     PORTS     NAMES
+0a81efbe8eda   pukoff/ansible:v1   "ansible-playbook --…"   2 weeks ago   Exited (0) 2 weeks ago               serene_herschel
+a800b719c367   debian:latest       "bash"                   2 weeks ago   Exited (137) 2 hours ago             debian
+e44575b56f92   centos:latest       "/bin/bash"              2 weeks ago   Exited (0) 2 hours ago               centos
+
+lex@userver:~/Docker$ docker run --name postgres -p 5432:5432 -v volume1:/data/volume1 -v volume2:/data/volume2 -e POSTGRES_USER=test-admin-user -e POSTGRES_PASSWORD=security -e POSTGRES_DB=test_db -d postgres:12
+lex@userver:~/Docker$ docker run --name postgres -p 5432:5432 -v volume1:/data/volume1 -v volume2:/data/volume2 -e POSTGRES_USER=test-admin-user -e POSTGRES_PASSWORD=security -e POSTGRES_DB=test_db -d postgres:12
+2e5c23f1cdfbbbf4e9411bf51a255adcbe7b07b8ceacbe3bf8c1eeccaee18439
+lex@userver:~/Docker$ docker exec -it postgres /bin/bash
+root@2e5c23f1cdfb:/# psql test_db -U test-admin-user < /data/volume1/test_db.sql 
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+SET
+SET
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER TABLE
+ALTER SEQUENCE
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER TABLE
+ALTER SEQUENCE
+ALTER TABLE
+ALTER TABLE
+COPY 5
+COPY 5
+ setval 
+--------
+      1
+(1 row)
+
+ setval 
+--------
+      1
+(1 row)
+
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+ALTER TABLE
+root@2e5c23f1cdfb:/# psql test_db -U test-admin-user
+psql (12.11 (Debian 12.11-1.pgdg110+1))
+Type "help" for help.
+
+test_db=# \dp *
+                                                Access privileges
+ Schema |      Name      |   Type   |              Access privileges              | Column privileges | Policies 
+--------+----------------+----------+---------------------------------------------+-------------------+----------
+ public | clients        | table    | "test-admin-user"=arwdDxt/"test-admin-user"+|                   | 
+        |                |          | "test-simple-user"=arwd/"test-admin-user"   |                   | 
+ public | clients_id_seq | sequence |                                             |                   | 
+ public | orders         | table    | "test-admin-user"=arwdDxt/"test-admin-user"+|                   | 
+        |                |          | "test-simple-user"=arwd/"test-admin-user"   |                   | 
+ public | orders_id_seq  | sequence |                                             |                   | 
+(4 rows)
+```
+
+
+
+***
+Листинг SQL запросов
+
+```sql
+create table orders (id SERIAL primary key, order_name CHAR(20), order_cost INTEGER)
+
+create table clients (id SERIAL primary key, client_lastname CHAR(20), client_country CHAR(20), client_order INTEGER references orders(id))
+
+create index country on clients (client_country)
+
+create user "test-simple-user"
+
+grant select,insert,update,delete on orders, clients to "test-simple-user"
+
+select table_name, column_name, data_type from information_schema.columns where table_name = 'orders'
+
+select table_name, column_name, data_type from information_schema.columns where table_name = 'clients'
+
+insert into orders values (1,'Шоколад',10)
+insert into orders values (2,'Принтер',3000)
+insert into orders values (3,'Книга',500)
+insert into orders values (4,'Монитор',7000)
+insert into orders values (5,'Гитара',4000)
+
+
+insert into clients values (2,'Петров Петр Петрович','Canada')
+insert into clients values (3,'Иоганн Себастьян Бах','Japan')
+insert into clients values (4,'Ронни Джеймс Дио','Russia')
+insert into clients values (5,'Ritchie Blackmore','Russia')
+
+select count (*) from orders
+select count (*) from clients
+
+update clients set client_order = 3 where client_lastname = 'Иванов Иван Иванович'
+update clients set client_order = 4 where client_lastname = 'Петров Петр Петрович'
+update clients set client_order = 5 where client_lastname = 'Иоганн Себастьян Бах'
+
+explain select * from clients where client_order is not null
+```
