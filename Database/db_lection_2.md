@@ -274,7 +274,6 @@ a800b719c367   debian:latest       "bash"                   2 weeks ago   Exited
 e44575b56f92   centos:latest       "/bin/bash"              2 weeks ago   Exited (0) 2 hours ago               centos
 
 lex@userver:~/Docker$ docker run --name postgres -p 5432:5432 -v volume1:/data/volume1 -v volume2:/data/volume2 -e POSTGRES_USER=test-admin-user -e POSTGRES_PASSWORD=security -e POSTGRES_DB=test_db -d postgres:12
-lex@userver:~/Docker$ docker run --name postgres -p 5432:5432 -v volume1:/data/volume1 -v volume2:/data/volume2 -e POSTGRES_USER=test-admin-user -e POSTGRES_PASSWORD=security -e POSTGRES_DB=test_db -d postgres:12
 2e5c23f1cdfbbbf4e9411bf51a255adcbe7b07b8ceacbe3bf8c1eeccaee18439
 lex@userver:~/Docker$ docker exec -it postgres /bin/bash
 root@2e5c23f1cdfb:/# psql test_db -U test-admin-user < /data/volume1/test_db.sql 
