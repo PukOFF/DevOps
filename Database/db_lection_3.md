@@ -168,18 +168,6 @@ mysql>
 
 ***
 
----
-
----
-
----
-
----
-
-
-
-***
-
 ## Задача 2
 
 Создайте пользователя test в БД c паролем test-pass, используя:
@@ -190,11 +178,92 @@ mysql>
 - аттрибуты пользователя:
     - Фамилия "Pretty"
     - Имя "James"
+```bash
+mysql>CREATE USER 'test'@'localhost' IDENTIFIED BY 'test-pass'
+WITH MAX_QUERIES_PER_HOUR 100
+PASSWORD EXPIRE INTERVAL 180 DAY
+FAILED_LOGIN_ATTEMPTS 3
+ATTRIBUTE '{"fname":"James","lname":"Pretty"}';
+```
+---
 
 Предоставьте привелегии пользователю `test` на операции SELECT базы `test_db`.
-    
+```bash
+mysql>GRANT SELECT ON test_db.* TO 'test'@'localhost'
+```
+---    
 Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test` и 
 **приведите в ответе к задаче**.
+
+```bash
+mysql> select * from information_schema.user_attributes where user='test';
++------+-----------+---------------------------------------+
+| USER | HOST      | ATTRIBUTE                             |
++------+-----------+---------------------------------------+
+| test | localhost | {"fname": "James", "lname": "Pretty"} |
++------+-----------+---------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from mysql.user where user='test' \G
+*************************** 1. row ***************************
+                    Host: localhost
+                    User: test
+             Select_priv: N
+             Insert_priv: N
+             Update_priv: N
+             Delete_priv: N
+             Create_priv: N
+               Drop_priv: N
+             Reload_priv: N
+           Shutdown_priv: N
+            Process_priv: N
+               File_priv: N
+              Grant_priv: N
+         References_priv: N
+              Index_priv: N
+              Alter_priv: N
+            Show_db_priv: N
+              Super_priv: N
+   Create_tmp_table_priv: N
+        Lock_tables_priv: N
+            Execute_priv: N
+         Repl_slave_priv: N
+        Repl_client_priv: N
+        Create_view_priv: N
+          Show_view_priv: N
+     Create_routine_priv: N
+      Alter_routine_priv: N
+        Create_user_priv: N
+              Event_priv: N
+            Trigger_priv: N
+  Create_tablespace_priv: N
+                ssl_type:
+              ssl_cipher: 0x
+             x509_issuer: 0x
+            x509_subject: 0x
+           max_questions: 100
+             max_updates: 0
+         max_connections: 0
+    max_user_connections: 0
+                  plugin: caching_sha2_password
+   authentication_string: $A$005$L;s3ecWq=
+3or%sy5C2SfaStxtZJluDj9F6sG3asu4OTo9wy6oe.kuLoD
+        password_expired: N
+   password_last_changed: 2022-06-25 21:01:57
+       password_lifetime: 180
+          account_locked: N
+        Create_role_priv: N
+          Drop_role_priv: N
+  Password_reuse_history: NULL
+     Password_reuse_time: NULL
+Password_require_current: NULL
+         User_attributes: {"metadata": {"fname": "James", "lname": "Pretty"}, "Password_locking": {"failed_login_attempts": 3, "password_lock_time_days": 0}}
+1 row in set (0.00 sec)
+
+mysql>
+```
+
+***
 
 ## Задача 3
 
