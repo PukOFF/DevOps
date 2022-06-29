@@ -328,17 +328,10 @@ mysql> show profiles;
 |        3 | 0.00084850 | select title,price from orders where price > 300                                                                    |
 |        4 | 0.00058950 | select DATABASE(), USER() limit 1                                                                                   |
 |        5 | 0.00064200 | select @@character_set_client, @@character_set_connection, @@character_set_server, @@character_set_database limit 1 |
-|        6 | 0.00015425 | show engine                                                                                                         |
-|        7 | 0.00288125 | show engines                                                                                                        |
-|        8 | 0.11332400 | show table status                                                                                                   |
-|        9 | 0.00037400 | show test_db status                                                                                                 |
-|       10 | 0.01222675 | show table status                                                                                                   |
-|       11 | 0.00016800 | alter test_db engine=MyISAM                                                                                         |
-|       12 | 0.52373750 | alter table test_db engine=MyISAM                                                                                   |
-|       13 | 0.00014250 | alter table engine=MyISAM                                                                                           |
-|       14 | 0.00292625 | alter table . engine=MyISAM                                                                                         |
-|       15 | 2.37224950 | alter table orders engine=MyISAM                                                                                    |
-|       16 | 0.30059200 | alter table orders engine=InnoDB                                                                                    |
+|        6 | 0.00288125 | show engines                                                                                                        |
+|        7 | 0.11332400 | show table status                                                                                                   |
+|        8 | 2.37224950 | alter table orders engine=MyISAM                                                                                    |
+|        9 | 0.30059200 | alter table orders engine=InnoDB                                                                                    |
 +----------+------------+---------------------------------------------------------------------------------------------------------------------+
 15 rows in set, 1 warning (0.00 sec)
 
