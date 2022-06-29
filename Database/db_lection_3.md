@@ -269,12 +269,84 @@ mysql>
 
 Установите профилирование `SET profiling = 1`.
 Изучите вывод профилирования команд `SHOW PROFILES;`.
+```bash
+mysql> set profiling = 1;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
 
+showmysql> show profiles;
++----------+------------+---------------------------------------------------------------------------------------------------------------------+
+| Query_ID | Duration   | Query                                                                                                               |
++----------+------------+---------------------------------------------------------------------------------------------------------------------+
+|        1 | 0.00124025 | select * from mysql.user where user='test'                                                                          |
+|        2 | 0.03184500 | GRANT SELECT ON test_db.* TO 'test'@'localhost'                                                                     |
+|        3 | 0.00084850 | select title,price from orders where price > 300                                                                    |
+|        4 | 0.00058950 | select DATABASE(), USER() limit 1                                                                                   |
+|        5 | 0.00064200 | select @@character_set_client, @@character_set_connection, @@character_set_server, @@character_set_database limit 1 |
++----------+------------+---------------------------------------------------------------------------------------------------------------------+
+5 rows in set, 1 warning (0.00 sec)
+
+mysql>
+```
+---
 Исследуйте, какой `engine` используется в таблице БД `test_db` и **приведите в ответе**.
+```bash
+mysql> show table status \G
+*************************** 1. row ***************************
+           Name: orders
+         Engine: InnoDB
+        Version: 10
+     Row_format: Dynamic
+           Rows: 5
+ Avg_row_length: 3276
+    Data_length: 16384
+Max_data_length: 0
+   Index_length: 0
+      Data_free: 0
+ Auto_increment: 6
+    Create_time: 2022-06-25 20:14:09
+    Update_time: 2022-06-25 20:14:09
+     Check_time: NULL
+      Collation: utf8mb4_0900_ai_ci
+       Checksum: NULL
+ Create_options:
+        Comment:
+1 row in set (0.01 sec)
+
+mysql>
+```
+---
 
 Измените `engine` и **приведите время выполнения и запрос на изменения из профайлера в ответе**:
 - на `MyISAM`
 - на `InnoDB`
+```bash
+mysql> show profiles;
++----------+------------+---------------------------------------------------------------------------------------------------------------------+
+| Query_ID | Duration   | Query                                                                                                               |
++----------+------------+---------------------------------------------------------------------------------------------------------------------+
+|        2 | 0.03184500 | GRANT SELECT ON test_db.* TO 'test'@'localhost'                                                                     |
+|        3 | 0.00084850 | select title,price from orders where price > 300                                                                    |
+|        4 | 0.00058950 | select DATABASE(), USER() limit 1                                                                                   |
+|        5 | 0.00064200 | select @@character_set_client, @@character_set_connection, @@character_set_server, @@character_set_database limit 1 |
+|        6 | 0.00015425 | show engine                                                                                                         |
+|        7 | 0.00288125 | show engines                                                                                                        |
+|        8 | 0.11332400 | show table status                                                                                                   |
+|        9 | 0.00037400 | show test_db status                                                                                                 |
+|       10 | 0.01222675 | show table status                                                                                                   |
+|       11 | 0.00016800 | alter test_db engine=MyISAM                                                                                         |
+|       12 | 0.52373750 | alter table test_db engine=MyISAM                                                                                   |
+|       13 | 0.00014250 | alter table engine=MyISAM                                                                                           |
+|       14 | 0.00292625 | alter table . engine=MyISAM                                                                                         |
+|       15 | 2.37224950 | alter table orders engine=MyISAM                                                                                    |
+|       16 | 0.30059200 | alter table orders engine=InnoDB                                                                                    |
++----------+------------+---------------------------------------------------------------------------------------------------------------------+
+15 rows in set, 1 warning (0.00 sec)
+
+mysql>
+
+```
+
+---
 
 ## Задача 4 
 
@@ -288,3 +360,29 @@ mysql>
 - Размер файла логов операций 100 Мб
 
 Приведите в ответе измененный файл `my.cnf`.
+```bash
+[mysqld]
+pid-file        = /var/run/mysqld/mysqld.pid
+socket          = /var/run/mysqld/mysqld.sock
+datadir         = /var/lib/mysql
+secure-file-priv= NULL
+
+#Set IO Speed
+# 0 - скорость
+# 1 - сохранность
+# 2 - универсальный параметр
+innodb_flush_log_at_trx_commit = 0 
+
+#Set compression
+# Barracuda - формат файла с сжатием
+innodb_file_format=Barracuda
+
+#Set buffer
+innodb_log_buffer_size	= 1M
+
+#Set Cache size
+key_buffer_size = 640М
+
+#Set log size
+max_binlog_size	= 100M
+```
