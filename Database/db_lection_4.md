@@ -157,10 +157,42 @@ test_database=#
 
 Предложите SQL-транзакцию для проведения данной операции.
 
+```bash
+test_database=# alter table orders rename to orders_simple;
+ALTER TABLE
+test_database=# create table orders (id integer, title varchar(80), price integer) partition by range(price);
+CREATE TABLE
+test_database=# create table orders_less499 partition of orders for values from (0) to (499);
+CREATE TABLE
+test_database=# create table orders_more499 partition of orders for values from (499) to (999999999);
+CREATE TABLE
+test_database=# insert into orders (id, title, price) select * from orders_simple;
+INSERT 0 8
+test_database=# 
+```
+---
+
 Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?
+
+```text
+При изначальном проектировании таблиц можно было сделать ее секционированной, тогда не пришлось бы переименовывать исходную таблицу и переносить данные в новую
+```
 
 ## Задача 4
 
 Используя утилиту `pg_dump` создайте бекап БД `test_database`.
-
+```bash
+root@92a41b54d997:/# pg_dump -U test-admin -d test_database > /data/postgreSQL/backup_30062022.sql
+root@92a41b54d997:/# ls -l /data/postgreSQL/
+total 8
+-rw-r--r-- 1 root root 2104 Jun 30 09:45 backup_30062022.sql
+-rw-r--r-- 1 root root 2081 Jun 30 09:00 test_dump.sql
+root@92a41b54d997:/#
+```
+---
 Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?
+
+Для уникальности можно добавить индекс или первичный ключ.
+```bash
+CREATE INDEX ON orders ((lower(title)));
+```
