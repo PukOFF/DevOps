@@ -337,6 +337,7 @@ PUT http://localhost:9200/_snapshot/netology_backup/elasticsearch?wait_for_compl
 	}
 }
 ```
+**Запрос**
 
 PUT http://localhost:9200/_snapshot/baskup_repo/elasticsearch
 ---
@@ -365,6 +366,7 @@ green  open   .geoip_databases Kdnc9tIiRi-SK8TBTAmeRg   1   0         40        
 ```
 
 **Запрос**
+
 PUT http://localhost:9200/test-2
 
 ```json
@@ -377,6 +379,7 @@ PUT http://localhost:9200/test-2
 ```
 
 **Ответ**
+
 ```json
 {
 	"acknowledged": true,
@@ -395,6 +398,7 @@ green  open   test-2           Brmi8VUJTKShSTGoJxqZyg   1   0          0        
 **Приведите в ответе** запрос к API восстановления и итоговый список индексов.
 
 **Запрос**
+
 POST http://localhost:9200/_snapshot/netology_backup/elasticsearch/_restore?pretty
 
 ```json
