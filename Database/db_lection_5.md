@@ -291,7 +291,7 @@ green  open   test             84waBErQQLq-9G98asjlWw   1   0          0        
 состояния кластера `elasticsearch`.
 
 **Запрос**
-PUT http://10.2.56.25:9200/_snapshot/netology_backup/elasticsearch?wait_for_completion=true
+PUT http://localhost:9200/_snapshot/netology_backup/elasticsearch?wait_for_completion=true
 
 **Ответ**
 
@@ -338,7 +338,7 @@ PUT http://10.2.56.25:9200/_snapshot/netology_backup/elasticsearch?wait_for_comp
 }
 ```
 
-PUT http://10.2.56.25:9200/_snapshot/baskup_repo/elasticsearch
+PUT http://localhost:9200/_snapshot/baskup_repo/elasticsearch
 ---
 
 **Приведите в ответе** список файлов в директории со `snapshot`ами.
@@ -359,13 +359,13 @@ root@701385f9c9bd:/usr/share/elasticsearch/snapshots#
 
 Удалите индекс `test` и создайте индекс `test-2`. **Приведите в ответе** список индексов.
 
-```bash
+```json
 health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   .geoip_databases Kdnc9tIiRi-SK8TBTAmeRg   1   0         40            0     37.7mb         37.7mb
 ```
 
 **Запрос**
-PUT http://10.2.56.25:9200/test-2
+PUT http://localhost:9200/test-2
 
 ```json
 { "settings": 
@@ -383,8 +383,7 @@ PUT http://10.2.56.25:9200/test-2
 	"shards_acknowledged": true,
 	"index": "test-2"
 }
-```
-```bash
+
 health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   .geoip_databases Kdnc9tIiRi-SK8TBTAmeRg   1   0         40            0     37.7mb         37.7mb
 green  open   test-2           Brmi8VUJTKShSTGoJxqZyg   1   0          0            0       226b           226b
@@ -396,7 +395,7 @@ green  open   test-2           Brmi8VUJTKShSTGoJxqZyg   1   0          0        
 **Приведите в ответе** запрос к API восстановления и итоговый список индексов.
 
 **Запрос**
-POST http://10.2.56.25:9200/_snapshot/netology_backup/elasticsearch/_restore?pretty
+POST http://localhost:9200/_snapshot/netology_backup/elasticsearch/_restore?pretty
 
 ```json
 {
@@ -406,7 +405,7 @@ POST http://10.2.56.25:9200/_snapshot/netology_backup/elasticsearch/_restore?pre
 ```
 
 **Ответ**
-```bash
+```json
 health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test-2           Brmi8VUJTKShSTGoJxqZyg   1   0          0            0       226b           226b
 green  open   .geoip_databases cb-19TqVT5uUjOROw2hzXA   1   0         40            0     37.7mb         37.7mb
