@@ -79,11 +79,119 @@ volumes:
 
 Получите список индексов и их статусов, используя API и **приведите в ответе** на задание.
 
+---
+
+```bash
+elasticsearch@45b4069da7f1:~$ curl -X GET 'http://localhost:9200/_cat/indices?v'
+health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   .geoip_databases Kdnc9tIiRi-SK8TBTAmeRg   1   0         40            0     37.7mb         37.7mb
+green  open   ind-1            xoPJ_qzOTwCelOOpHvvzGA   1   0          0            0       226b           226b
+yellow open   ind-3            yAH6NfWNRAK_BLkZAHopww   4   2          0            0       904b           904b
+yellow open   ind-2            UIb5KXchTDeNI9_PbeS5eg   2   1          0            0       452b           452b
+elasticsearch@45b4069da7f1:~$
+```
+
+```bash
+elasticsearch@45b4069da7f1:~$ curl -X GET 'http://localhost:9200/_cluster/health/ind-1?pretty'
+{
+  "cluster_name" : "docker-cluster",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 1,
+  "active_shards" : 1,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
+elasticsearch@45b4069da7f1:~$ curl -X GET 'http://localhost:9200/_cluster/health/ind-2?pretty'
+{
+  "cluster_name" : "docker-cluster",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 2,
+  "active_shards" : 2,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 2,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 44.44444444444444
+}
+elasticsearch@45b4069da7f1:~$ curl -X GET 'http://localhost:9200/_cluster/health/ind-3?pretty'
+{
+  "cluster_name" : "docker-cluster",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 4,
+  "active_shards" : 4,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 8,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 44.44444444444444
+}
+elasticsearch@45b4069da7f1:~$
+
+```
+---
+
 Получите состояние кластера `elasticsearch`, используя API.
+```bash
+elasticsearch@45b4069da7f1:~$ curl -XGET localhost:9200/_cluster/health/?pretty=true
+{
+  "cluster_name" : "docker-cluster",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 8,
+  "active_shards" : 8,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 10,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 44.44444444444444
+}
+
+```
+
 
 Как вы думаете, почему часть индексов и кластер находится в состоянии yellow?
 
 Удалите все индексы.
+---
+
+```bash
+elasticsearch@45b4069da7f1:~$ curl -X DELETE localhost:9200/ind-1
+{"acknowledged":true}
+elasticsearch@45b4069da7f1:~$ curl -X DELETE localhost:9200/ind-2
+{"acknowledged":true}
+elasticsearch@45b4069da7f1:~$ curl -X DELETE localhost:9200/ind-3
+{"acknowledged":true}
+elasticsearch@45b4069da7f1:~$
+
+```
+---
+
 
 **Важно**
 
