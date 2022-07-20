@@ -213,6 +213,7 @@ elasticsearch@45b4069da7f1:~$
 **Приведите в ответе** запрос API и результат вызова API для создания репозитория.
 
 **Запрос**
+
 POST http://hostname:9200/_snapshot/netology_backup
 
 ```json
@@ -236,9 +237,10 @@ POST http://hostname:9200/_snapshot/netology_backup
 }
 ```
 
+---
+
 Создайте индекс `test` с 0 реплик и 1 шардом и **приведите в ответе** список индексов.
 
----
 
 **Запрос**
 
@@ -340,7 +342,7 @@ PUT http://localhost:9200/_snapshot/netology_backup/elasticsearch?wait_for_compl
 **Запрос**
 
 PUT http://localhost:9200/_snapshot/baskup_repo/elasticsearch
----
+
 
 **Приведите в ответе** список файлов в директории со `snapshot`ами.
 
@@ -391,6 +393,7 @@ health status index            uuid                   pri rep docs.count docs.de
 green  open   .geoip_databases Kdnc9tIiRi-SK8TBTAmeRg   1   0         40            0     37.7mb         37.7mb
 green  open   test-2           Brmi8VUJTKShSTGoJxqZyg   1   0          0            0       226b           226b
 ```
+---
 
 [Восстановите](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-restore-snapshot.html) состояние
 кластера `elasticsearch` из `snapshot`, созданного ранее. 
