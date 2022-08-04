@@ -68,8 +68,8 @@ Terraform, Kubernetes, Docker, Packer. Terraform уже активно испо�
 В виде результата этой задачи приложите вывод команды `terraform --version`.
 
 ---
-<p align="center">
-  <img width="1200" height="500" src="./images/terraform.png">
+<p align="left">
+  <img src="./images/terraform.png">
 </p>
 
 ---
@@ -85,7 +85,7 @@ Terraform, Kubernetes, Docker, Packer. Terraform уже активно испо�
 или виртуальной машине.
 
 ---
-<p align="center">
-  <img width="1200" height="500" src="./images/terraform_version.png">
+<p align="left">
+  <img src="./images/terraform_version.png">
 </p>
 ---
