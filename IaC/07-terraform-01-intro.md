@@ -69,7 +69,7 @@ Terraform, Kubernetes, Docker, Packer. Terraform уже активно испо�
 
 ---
 <p align="left">
-  <img src="./images/terraform.png">
+  <img src="./terraform/images/terraform.png">
 </p>
 
 ---
@@ -86,6 +86,6 @@ Terraform, Kubernetes, Docker, Packer. Terraform уже активно испо�
 
 ---
 <p align="left">
-  <img src="./images/terraform_version.png">
+  <img src="./terraform/images/terraform_version.png">
 </p>
 ---
