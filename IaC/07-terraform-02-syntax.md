@@ -76,7 +76,8 @@ AWS предоставляет достаточно много бесплатн�
     <img src="./terraform/images/terraform_apply_error.png">
 </p>
 
-Скорректировал переменные:
+
+Скорректировал переменную folder_id и все завелось:
 <p align="left">
     <img src="./terraform/images/yc_cloud.png">
 </p>
@@ -210,7 +211,7 @@ alex@AlexPC:~/GitHub/DevOps/IaC/terraform$
 Переменные среду, которые используются:
 ```bash
 TF_VAR_yc_cloud_id=<CLOUD_ID>
-TF_VAR_yc_folder_id=b1gd9fevt43ubva23c94
+TF_VAR_yc_folder_id=<FOLDER_ID>
 TF_VAR_yc_token=<TOKEN>
 TF_VAR_yc_zone=ru-central1-a
 ```
