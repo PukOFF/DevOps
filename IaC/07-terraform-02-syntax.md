@@ -76,7 +76,134 @@ AWS предоставляет достаточно много бесплатн�
     <img src="./terraform/images/terraform_apply_error.png">
 </p>
 
-**Подскажите, с чем связана данная ошибка?**
+Скорректировал переменные:
+<p align="left">
+    <img src="./terraform/images/yc_cloud.png">
+</p>
+
+```bash
+alex@AlexPC:~/GitHub/DevOps/IaC/terraform$ ./terraform apply
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # yandex_compute_instance.vpc will be created
+  + resource "yandex_compute_instance" "vpc" {
+      + created_at                = (known after apply)
+      + folder_id                 = (known after apply)
+      + fqdn                      = (known after apply)
+      + hostname                  = (known after apply)
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                ubuntu:-----BEGIN OPENSSH PRIVATE KEY-----
+                ...
+                -----END OPENSSH PRIVATE KEY-----
+            EOT
+        }
+      + name                      = "vpc"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + block_size  = (known after apply)
+              + description = (known after apply)
+              + image_id    = "fd80viupr3qjr5g6g9du"
+              + name        = (known after apply)
+              + size        = (known after apply)
+              + snapshot_id = (known after apply)
+              + type        = "network-hdd"
+            }
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = true
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = (known after apply)
+        }
+
+      + placement_policy {
+          + host_affinity_rules = (known after apply)
+          + placement_group_id  = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 100
+          + cores         = 2
+          + memory        = 4
+        }
+
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
+    }
+
+  # yandex_vpc_network.my_network will be created
+  + resource "yandex_vpc_network" "my_network" {
+      + created_at                = (known after apply)
+      + default_security_group_id = (known after apply)
+      + folder_id                 = (known after apply)
+      + id                        = (known after apply)
+      + labels                    = (known after apply)
+      + name                      = "my_network"
+      + subnet_ids                = (known after apply)
+    }
+
+  # yandex_vpc_subnet.my_subnet will be created
+  + resource "yandex_vpc_subnet" "my_subnet" {
+      + created_at     = (known after apply)
+      + folder_id      = (known after apply)
+      + id             = (known after apply)
+      + labels         = (known after apply)
+      + name           = "my_subnet"
+      + network_id     = (known after apply)
+      + v4_cidr_blocks = [
+          + "10.130.0.0/16",
+        ]
+      + v6_cidr_blocks = (known after apply)
+      + zone           = "ru-central1-a"
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+yandex_vpc_network.my_network: Creating...
+yandex_vpc_network.my_network: Creation complete after 0s [id=enpf9h2ggch0qfaeagp7]
+yandex_vpc_subnet.my_subnet: Creating...
+yandex_vpc_subnet.my_subnet: Creation complete after 1s [id=e9bm7hhg25e90djlactn]
+yandex_compute_instance.vpc: Creating...
+yandex_compute_instance.vpc: Still creating... [10s elapsed]
+yandex_compute_instance.vpc: Still creating... [20s elapsed]
+yandex_compute_instance.vpc: Creation complete after 25s [id=fhmb6dl392mphm7a3vpa]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+alex@AlexPC:~/GitHub/DevOps/IaC/terraform$
+```
+
 
 ---
 
