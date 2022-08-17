@@ -1,16 +1,44 @@
 variable "yc_token" {
-   default = "AQAAAAAITr-AAATuwQGvx2-xd00CgyUxcO-fhik"
+  type = string
 }
-
 variable "yc_cloud_id" {
-  default = "b1ggfq7sd82lqcg3psgp"
+  type = string
 }
-
 variable "yc_folder_id" {
-  default = "b1g4inuvv0jlp45umhpf"
+  type = string
 }
-
 variable "yc_zone" {
-  default = "ru-central1-a"
+  type = string
+}
+locals {
+  platform = {
+    default = "standard-v1"
+    stage = "standard-v2"
+    prod = "standard-v3"
+  }
+  cores = {
+    default = 2
+    stage = 2
+    prod = 4
+  }
+  memory = {
+    default = 1
+    stage = 2
+    prod = 2
+  }
+  disk_size = {
+    default = 10
+    stage = 20
+    prod = 40
+  }
+  instance_count = {
+    default = 1
+    stage = 1
+    prod = 2
+  }
+  each_instances = {
+    "each1" = "standard-v1"
+    "each2" = "standard-v2"
+  }
 }
 
