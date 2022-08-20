@@ -57,43 +57,7 @@ Terraform will perform the following actions:
       + metadata                  = {
           + "ssh-keys" = <<-EOT
                 ubuntu:-----BEGIN OPENSSH PRIVATE KEY-----
-                b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
-                NhAAAAAwEAAQAAAYEAw5f3wWJrR8TS7uQAPEboMaja7K+zTyi1q0pKg2GqrVJ7LM+geIHW
-                3GDCBO5zLQSZVVmaRkRjiEIwvHh4C/KAVZ7Tf2cmuisJNY36MPNB9+u8TFGJg/TsVpL33R
-                7fwF2qNZeG+TgR4T8kVY9ha34zARAxcqSQgDet5V/8/ioqcVXjb9pvihFmDSa1zDXfaRUR
-                h8Q+k60VAGS1lKKTurXJd9YAyoi64sts8PPgDspzlibTiVZ812Uoa40HmqoI/Tjt9E/SVJ
-                3vAiYWWR0pzQ7C4fj/EUINhZeeG0cs5VYHr2P2AD5AGwP6eEEBLs+yG/W3JTErLZAQIfuu
-                R1xQrKDEZ73rdKY8KnozinRf+PrvO2fCo+sjt9HNvchwoQr3i+UpM9i4kW8iqiN1mG58v3
-                WkW1rjxfBDXajv2qprrZTaH82zPsd4XzzTCZMvj/P4NejCM8xjHvDl721JLpsZ7+aWNXXM
-                thiKtbhUSqjPfp2nYH+2gqnzkc3mhQ+5tsqasFHRAAAFiEgjErxIIxK8AAAAB3NzaC1yc2
-                EAAAGBAMOX98Fia0fE0u7kADxG6DGo2uyvs08otatKSoNhqq1SeyzPoHiB1txgwgTucy0E
-                mVVZmkZEY4hCMLx4eAvygFWe039nJrorCTWN+jDzQffrvExRiYP07FaS990e38BdqjWXhv
-                k4EeE/JFWPYWt+MwEQMXKkkIA3reVf/P4qKnFV42/ab4oRZg0mtcw132kVEYfEPpOtFQBk
-                tZSik7q1yXfWAMqIuuLLbPDz4A7Kc5Ym04lWfNdlKGuNB5qqCP047fRP0lSd7wImFlkdKc
-                0OwuH4/xFCDYWXnhtHLOVWB69j9gA+QBsD+nhBAS7Pshv1tyUxKy2QECH7rkdcUKygxGe9
-                63SmPCp6M4p0X/j67ztnwqPrI7fRzb3IcKEK94vlKTPYuJFvIqojdZhufL91pFta48XwQ1
-                2o79qqa62U2h/Nsz7HeF880wmTL4/z+DXowjPMYx7w5e9tSS6bGe/mljV1zLYYirW4VEqo
-                z36dp2B/toKp85HN5oUPubbKmrBR0QAAAAMBAAEAAAGAOMI+yUWQMDFzrJNJZjSFaPPBI/
-                IQrKX5og1a9ik/aDCJQgW2YYH8IdOKOfggQC4XeOcZl858u6vJjMfAvmbOywneAhii6l9W
-                us3Kjq3otNMZv2Ph7gMDGlRnzSkKcT49CHRCXMvilGTIXHPRJ2plzqcuUkBjFnIR6oAiYH
-                dH/b+Y0nqm54AJB0P2eZ4giNPuVGGkbyJI9+ZBszJCgGoEXtwhOqTW5r11ja6XlHM3e5kk
-                xbPtYmwegKdaT42MMj90ey2+noNDFzgbH5flJKIB4EJNEI48KfcGqikAUiM4gNDYwUTY6h
-                cqqKR6JdRvfXlhSUPgErtnvjGWElUfxbOJaqprLQVLYhEJa5x/ZvKiFAfzngsDqo1dODqI
-                QYBqELWu4cTqKJzBJifWOnO44tsb/H0ADKLtq+qle6DAkrPEYMFuxTKtRuvfCE7pErnfCX
-                OtG0h9aRd8XxC1A7YM6kWIKsWM/RzATGxp1FSKqvxrf+H+XnXUqRZCRb5xTLXiYLABAAAA
-                wQCjeROy8nKgbdwe/5ws5yUcBl7wh4s1bTGVSVHQmn5vtwQ9sR+neJFDlIwj9GQx9UbNvj
-                TpKr80lksiAdPQCN7rG3UH9GbWzO5sfoDCSf0L3ri3uGy7ddmf7lNjNjXTXlt+/pFuZDZF
-                2Z2v5XbRTHLVSjuWlIzo5YOyX+bINBejGVxc0yWtXu1vR7SgffBTeWVxk+CDSsoqdNzwBs
-                ohEf2azpgANVS/IXiBrMMT5jhaMcwTa4WIFdb/uNrKdDY+HG4AAADBAPu2opGzYmh5LRV5
-                CvzVj+dBaVdtfB6pSP1ruY0xlQVQLytS0Ky4+z1ojlEXBqgU/B0gaffmfR6vohqw60/dWH
-                755MOiz9QkS6QoHex+ZeA95EiPFdf0paWm6muZNJ7VZgq3b+Ar12IOR+naK876vTbfZpVM
-                yK2ax5fqAQlSORmYKy8upvNK+vR0BUHwIqbpfz19mAMX39tva78OJAnfBsOcYK0UxoYHXP
-                +SkoCdUgmBwfC7s1PcZa+OziE/hG05gQAAAMEAxuysim+MbqpEqwHhGfJqKmSzmP6+rpS6
-                YXZoBZRFz+JhfwtV0MWkliYwOviJnPLrZsLMRC4odieeY2K0m/VR0bkLTXoW3nJlZo4DtI
-                hCuyqgi1pO5YfRP/Okk4AW9gDFucHLBwzxKW6wP8UG17ZH/GHn8Ki5kNk8qfChhAe8gSMK
-                5IeHH2rU4FsMPOgpZwIwQ/S0GKHJjOIbgw39FRU7EUjNDXy79ZWVQsNVF/dcoa4aCgbC/T
-                X5Y9tWNMUrcSBRAAAAC2FsZXhAQWxleFBDAQIDBAUGBw==
-                -----END OPENSSH PRIVATE KEY-----
+                       -----END OPENSSH PRIVATE KEY-----
             EOT
         }
       + name                      = "vpc-prod-1"
