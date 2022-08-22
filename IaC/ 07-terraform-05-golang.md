@@ -41,7 +41,7 @@ go version go1.13.8 linux/amd64
     ```
 ---
    
-    ```t
+```t
     package main
     
     import "fmt"
@@ -55,7 +55,7 @@ go version go1.13.8 linux/amd64
     
 	fmt.Println("Number of foots: ", output)    
     }
-    ```
+```
 
  
 1. Напишите программу, которая найдет наименьший элемент в любом заданном списке, например:
@@ -64,7 +64,7 @@ go version go1.13.8 linux/amd64
     ```
 ---
 
-    ```t
+```t
     package main
 
     import "fmt"
@@ -81,7 +81,7 @@ go version go1.13.8 linux/amd64
         fmt.Println("Min variable:" , min)
     }
 
-    ```
+```
 1. Напишите программу, которая выводит числа от 1 до 100, которые делятся на 3. То есть `(3, 6, 9, …)`.
 
 ```t
