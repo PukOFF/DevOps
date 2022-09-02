@@ -10,10 +10,10 @@
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/test.yml --host localhost
-{
-    "ansible_connection": "local",
-    "some_fact": 12
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/test.yml site.yml
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [localhost] => {
+    "msg": 12
 }
 ```
 ---
@@ -22,10 +22,10 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/test.yml --host localhost
-{
-    "ansible_connection": "local",
-    "some_fact": "all default fact"
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/test.yml site.yml
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [localhost] => {
+    "msg": "all default fact"
 }
 ```
 
@@ -47,17 +47,14 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --host ubuntu
-{
-    "ansible_connection": "docker",
-    "some_fact": "deb"
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --host centos7
-{
-    "ansible_connection": "docker",
-    "some_fact": "el"
+ok: [ubuntu] => {
+    "msg": "deb"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 ```
 ---
 
@@ -65,17 +62,14 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --host ubuntu
-{
-    "ansible_connection": "docker",
-    "some_fact": "deb"
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --host centos7
-{
-    "ansible_connection": "docker",
-    "some_fact": "el"
+ok: [ubuntu] => {
+    "msg": "deb default fact"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 ```
 ---
 
@@ -83,39 +77,14 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --list
-{
-    "_meta": {
-        "hostvars": {
-            "centos7": {
-                "ansible_connection": "docker",
-                "some_fact": "el default fact"
-            },
-            "ubuntu": {
-                "ansible_connection": "docker",
-                "some_fact": "deb default fact"
-            }
-        }
-    },
-    "all": {
-        "children": [
-            "deb",
-            "el",
-            "ungrouped"
-        ]
-    },
-    "deb": {
-        "hosts": [
-            "ubuntu"
-        ]
-    },
-    "el": {
-        "hosts": [
-            "centos7"
-        ]
-    }
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ 
+ok: [ubuntu] => {
+    "msg": "deb default fact"
+}
 ```
 ---
 
@@ -123,24 +92,23 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ cat group_vars/deb/examp.yml 
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ cat group_vars/el/examp.yml
 $ANSIBLE_VAULT;1.1;AES256
-31653738623531313035306464383532643833333734396164636436306637303835353563633262
-3861386339303861376230633339356635343638653664650a616363666131663136383637343137
-63323833306565363566333839303138313334343734313033643233323830376136663739363935
-6263303937663966640a323363383761316530373331306466383830333665616162623837636466
-38326566663364346539636432616234353234663939623433636237633637656434306265626665
-3262333263663139336332396635333265326663623235616462
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ cat group_vars/el/examp.yml 
+31303461306139663730623936363661313662623335383838336237643834343361323864396234
+3463363763656464393737633563613734633036613464320a643037653632353630663334356536
+31336233376530323434623163346666653664616336303638353439303061313031383039613134
+6530663937303831660a343034316538363566326439616338366233656232323162323339356236
+64383935636335346264343263356338616461343431636262303862356632303330386438376636
+3365386561323361323437643062323533363761376435613431
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ cat group_vars/deb/examp.yml
 $ANSIBLE_VAULT;1.1;AES256
-34633965396537376432336363613866663836353762396631383937663462633437316463633964
-3763373463623936313133613634366230323339663464650a333736623737633365303563353561
-66623561363933656238303736396432333433386638656630646566313737663461366364323832
-3233396666323238370a316465383934663465373761316136636130323038316632373535646436
-63396264613461356638643136643634653637613832343966326265666336386133356331346339
-3161373864366362376238376239373563393637326465643835
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ 
-
+31633635393739666638353733306565333136373435623134656666336163666632303336343163
+3964343036383939323166613163623837643032633635650a666238633462323839626662386632
+37616436653937666665663436356232646163303464613935326433623566356537616661646339
+3639353362303166380a316530316231643965326438346632643531363766396464383536643663
+33303765626365623665323339373436646238616562633664386634633334333039366339643831
+3736323163323165323631663639363664653335306465303163
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playboo
 ```
 ---
 
@@ -148,40 +116,15 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --list --ask-vault-password
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml --ask-vault-password
 Vault password: 
-{
-    "_meta": {
-        "hostvars": {
-            "centos7": {
-                "ansible_connection": "docker",
-                "some_fact": "el default fact"
-            },
-            "ubuntu": {
-                "ansible_connection": "docker",
-                "some_fact": "deb default fact"
-            }
-        }
-    },
-    "all": {
-        "children": [
-            "deb",
-            "el",
-            "ungrouped"
-        ]
-    },
-    "deb": {
-        "hosts": [
-            "ubuntu"
-        ]
-    },
-    "el": {
-        "hosts": [
-            "centos7"
-        ]
-    }
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ 
+ok: [ubuntu] => {
+    "msg": "deb default fact"
+}
 ```
 ---
 
@@ -190,10 +133,6 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 ---
 ```bash
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-doc -t connection -l
-[WARNING]: Collection splunk.es does not support Ansible version 2.12.8
-[WARNING]: Collection ibm.qradar does not support Ansible version 2.12.8
-[DEPRECATION WARNING]: ansible.netcommon.napalm has been deprecated. See the plugin documentation for more details. This feature will be removed from ansible.netcommon in a release after 2022-06-01. Deprecation warnings can 
-be disabled by setting deprecation_warnings=False in ansible.cfg.
 ansible.netcommon.httpapi      Use httpapi to run command on network appliances                                                                                                                                              
 ansible.netcommon.libssh       (Tech preview) Run tasks using libssh for ssh connection                                                                                                                                      
 ansible.netcommon.napalm       Provides persistent connection using NAPALM                                                                                                                                                   
@@ -257,50 +196,18 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 
 ---
 ```bash
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-inventory -i inventory/prod.yml --list --ask-vault-password
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml --ask-vault-password
 Vault password: 
-{
-    "_meta": {
-        "hostvars": {
-            "centos7": {
-                "ansible_connection": "docker",
-                "some_fact": "el default fact"
-            },
-            "localhost": {
-                "ansible_connection": "local",
-                "some_fact": "all default fact"
-            },
-            "ubuntu": {
-                "ansible_connection": "docker",
-                "some_fact": "deb default fact"
-            }
-        }
-    },
-    "all": {
-        "children": [
-            "deb",
-            "el",
-            "loc",
-            "ungrouped"
-        ]
-    },
-    "deb": {
-        "hosts": [
-            "ubuntu"
-        ]
-    },
-    "el": {
-        "hosts": [
-            "centos7"
-        ]
-    },
-    "loc": {
-        "hosts": [
-            "localhost"
-        ]
-    }
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
 }
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ 
+ok: [ubuntu] => {
+    "msg": "deb default fact"
+}
+ok: [localhost] => {
+    "msg": "all default fact"
+}
 ```
 ---
 
@@ -331,19 +238,62 @@ New Vault password:
 Confirm New Vault password: 
 !vault |
           $ANSIBLE_VAULT;1.1;AES256
-          61383837326662636538653764343066313665353638306663623233313631326139663565643337
-          6234346264333138633866363936363539653765343532320a326263656434333431633432643566
-          66653137333237633031646562616166373530396238313063643632333838643961346631346464
-          6632313464623039650a316664333834306238366634316361613464323334313633303738666338
-          6435
+          61646162396261666564386661623630386666663331323334656138333337636664303039386334
+          6564373539306335633930393766383666646536663939630a363732383830383463326632656230
+          36633262666637383861613431393663343031383333356664353836393634646463616163336463
+          3134306334613837620a653135613764336665393738633233353836656263356139346430323537
+          3738
 Encryption successful
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$
 ```
 ---
 
 3. Запустите `playbook`, убедитесь, что для нужных хостов применился новый `fact`.
+
+---
+```bash
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml --ask-vault-password
+Vault password: 
+
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
+}
+ok: [ubuntu] => {
+    "msg": "deb default fact"
+}
+ok: [localhost] => {
+    "msg": "PaSSw0rd"
+}
+```
+---
+
 4. Добавьте новую группу хостов `fedora`, самостоятельно придумайте для неё переменную. В качестве образа можно использовать [этот](https://hub.docker.com/r/pycontribs/fedora).
+
+---
+```bash
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ ansible-playbook -i inventory/prod.yml site.yml --ask-vault-password
+Vault password: 
+TASK [Print fact] ****************************************************************************************************************************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
+}
+ok: [ubuntu] => {
+    "msg": "deb default fact"
+}
+ok: [fedora] => {
+    "msg": "fedora variable"
+}
+ok: [localhost] => {
+    "msg": "PaSSw0rd"
+}
+```
+---
+
 5. Напишите скрипт на bash: автоматизируйте поднятие необходимых контейнеров, запуск ansible-playbook и остановку контейнеров.
+
+
+
 6. Все изменения должны быть зафиксированы и отправлены в вашей личный репозиторий.
 
 ---
