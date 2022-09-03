@@ -12,7 +12,7 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-01-base/playbook$ cat group_vars/all/e
 
 ---
 ```bash
-ansible-inventory -i inventory/test.yml --host localhost
+ansible-playbook -i inventory/test.yml site.yml
 ```
 ---
 
@@ -47,7 +47,7 @@ ansible-vault view group_vars/deb/examp.ym
 
 ---
 ```bash
-ansible-inventory -i inventory/prod.yml --list --ask-vault-password
+ansible-playbook -i inventory/prod.yml site.yml --ask-vault-password
 ```
 ---
 

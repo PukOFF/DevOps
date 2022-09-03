@@ -1,4 +1,12 @@
 ---
+  - name: Install Python for Python
+    hosts: deb
+    gather_facts: false
+    tasks:
+      - name: Install Python
+        raw: apt update && apt install -y python3
+        changed_when: false
+      
   - name: Print os facts
     hosts: all
     tasks:
