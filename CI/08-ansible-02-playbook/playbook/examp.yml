@@ -32,20 +32,24 @@
 #        name: tar
 #        state: present
   tasks:
+    # создание директории "vector" на managed нодах
     - name: Create Directory
       file:
         path: ./vector/
         state: directory
+    # копирование архива "vector" на managed нодах
     - name: Copy Archive
       copy:
         src: "files/{{ name_archive }}"
         dest: ./vector/
+    # распаковка архива "vector" на managed нодах
     - name: Unarchive vector on managed hosts
       unarchive:
-        src: "files/{{ name_archive }}"
-        dest: ./vector
+        src: "./vector/{{ name_archive }}"
+        dest: ./vector/
       notify: second
   post_tasks:
+    # формирование шаблона конфига "vector" на managed нодах
     - name: Template it
       template: 
         src: vector.cfg.j2
