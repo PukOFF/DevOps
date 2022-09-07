@@ -1,6 +1,14 @@
 ---
-elasticsearch:
+clickhouse:
   hosts:
-    localhost:
-      ansible_connection: ssh
-      ansible_user: root
+    centos7:
+      ansible_connection: docker
+example:
+  hosts:
+    el:
+      ansible_host: 51.250.68.41
+      ansible_user: lex
+    ub:
+      ansible_host: 62.84.117.229
+      ansible_user: lex
+      
