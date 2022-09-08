@@ -1,53 +1,21 @@
 ---
 - name: Get archive
-  # последовательное выполнение play для всех хостов
-  #serial: 1
   hosts: example
-  handlers:
-    - name: first
-      debug:
-        msg: First handler
-      # группирование handlers
-      listen: handlers
-    - name: second
-      debug:
-        msg: Second handler
-    - name: third
-      debug:
-        msg: third handler
-      listen: handlers
   pre_tasks:
-    - name: Download Archive
-      get_url:
-        url: "https://packages.timber.io/vector/{{ vector_version }}/{{ name_archive }}"
-        dest: "files/{{ name_archive }}"
-      # выполнение задачи на первом хосте и дальнейшее применение результатов на последующих
-      run_once: true
-      # делегировать выполнение task на localhost
-      delegate_to: localhost
-      notify: handlers
-#    - name: Install untar
-#      become: true
-#      package:
-#        name: tar
-#        state: present
-  tasks:
-    # создание директории "vector" на managed нодах
     - name: Create Directory
       file:
         path: ./vector/
         state: directory
-    # копирование архива "vector" на managed нодах
-    - name: Copy Archive
-      copy:
-        src: "files/{{ name_archive }}"
-        dest: ./vector/
+  tasks:
+    - name: Download Archive
+      get_url:
+        url: "https://packages.timber.io/vector/{{ vector_version }}/{{ name_archive }}"
+        dest: "/home/lex/vector/{{ name_archive }}"
     # распаковка архива "vector" на managed нодах
     - name: Unarchive vector on managed hosts
       unarchive:
-        src: "./vector/{{ name_archive }}"
-        dest: ./vector/
-      notify: second
+        src: "{{ src_directory }}{{ name_archive }}"
+        dest: "{{ dst_directory }}"
   post_tasks:
     # формирование шаблона конфига "vector" на managed нодах
     - name: Template it

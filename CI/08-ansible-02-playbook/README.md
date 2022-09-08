@@ -35,46 +35,28 @@ example:
 3. При создании tasks рекомендую использовать модули: `get_url`, `template`, `unarchive`, `file`.
 4. Tasks должны: скачать нужной версии дистрибутив, выполнить распаковку в выбранную директорию, установить vector.
 
-**В данном задании не получается разорхивировать архив на managed ноды. Пробовал через копирование и модуль command**
-
-```yaml
-TASK [Unarchive vector on managed hosts] ***************************************************************************************************************************************
-fatal: [ub]: FAILED! => {"changed": false, "cmd": "'tar -zxvf ./vector/vector-0.24.0-x86_64-unknown-linux-gnu.tar.gz'", "msg": "[Errno 2] No such file or directory: b'tar -zxvf ./vector/vector-0.24.0-x86_64-unknown-linux-gnu.tar.gz'", "rc": 2, "stderr": "", "stderr_lines": [], "stdout": "", "stdout_lines": []}
-fatal: [el]: FAILED! => {"changed": false, "cmd": "'tar -zxvf ./vector/vector-0.24.0-x86_64-unknown-linux-gnu.tar.gz'", "msg": "[Errno 2] Нет такого файла или каталога", "rc": 2, "stderr": "", "stderr_lines": [], "stdout": "", "stdout_lines": []}
-```
-
-
 ---
 ```yaml
-  - name: Download Archive
-      get_url:
-        url: "https://packages.timber.io/vector/{{ vector_version }}/{{ name_archive }}"
-        dest: "files/{{ name_archive }}"
-      # выполнение задачи на первом хосте и дальнейшее применение результатов на последующих
-      run_once: true
-      # делегировать выполнение task на localhost
-      delegate_to: localhost
-      notify: handlers
-#    - name: Install untar
-#      become: true
-#      package:
-#        name: tar
-#        state: present
-  tasks:
+  ---
+- name: Get archive
+  hosts: example
+  pre_tasks:
     - name: Create Directory
       file:
         path: ./vector/
         state: directory
-    - name: Copy Archive
-      copy:
-        src: "files/{{ name_archive }}"
-        dest: ./vector/
+  tasks:
+    - name: Download Archive
+      get_url:
+        url: "https://packages.timber.io/vector/{{ vector_version }}/{{ name_archive }}"
+        dest: "/home/lex/vector/{{ name_archive }}"
+    # распаковка архива "vector" на managed нодах
     - name: Unarchive vector on managed hosts
       unarchive:
-        src: "./vector/{{ name_archive }}"
-        dest: ./vector/
-      notify: second
+        src: "{{ src_directory }}{{ name_archive }}"
+        dest: "{{ dst_directory }}"
   post_tasks:
+    # формирование шаблона конфига "vector" на managed нодах
     - name: Template it
       template: 
         src: vector.cfg.j2
@@ -91,8 +73,6 @@ Examining site.yml of type playbook
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ 
 ```
 ---
-
-**При выполнении возникает ошибка, что не удалось подключиться к базе данных. Хотя судя по логу handler отрабатывает**
 
 ```yaml
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ ansible-playbook -i inventory/prod.yml site.yml
@@ -153,87 +133,86 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$
 
 7. Запустите playbook на `prod.yml` окружении с флагом `--diff`. Убедитесь, что изменения на системе произведены.
 
-**Playbook оотрабатывает корректно, но архив не распаковывает на managed нодах**
-
 ---
+```yaml
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ ansible-playbook -i inventory/prod.yml examp.yml
+
+PLAY [Get archive] **********************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ******************************************************************************************************************************************************************************
+ok: [el]
+ok: [ub]
+
+TASK [Create Directory] *****************************************************************************************************************************************************************************
+ok: [el]
+changed: [ub]
+
+TASK [Download Archive] *****************************************************************************************************************************************************************************
+ok: [el]
+changed: [ub]
+
+TASK [Unarchive vector on managed hosts] ************************************************************************************************************************************************************
+ok: [el]
+changed: [ub]
+
+TASK [Template it] **********************************************************************************************************************************************************************************
+ok: [el]
+changed: [ub]
+
+PLAY RECAP ******************************************************************************************************************************************************************************************
+el                         : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ub                         : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$   
+```
 ```yaml
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ ansible-playbook -i inventory/prod.yml examp.yml --diff
 
-PLAY [Get archive] *************************************************************************************************************************************************************
+PLAY [Get archive] **********************************************************************************************************************************************************************************
 
-TASK [Gathering Facts] *********************************************************************************************************************************************************
-ok: [el]
-ok: [ub]
-
-TASK [Download Archive] ********************************************************************************************************************************************************
-ok: [el -> localhost]
-
-TASK [Create Directory] ********************************************************************************************************************************************************
-ok: [el]
-ok: [ub]
-
-TASK [Copy Archive] ************************************************************************************************************************************************************
+TASK [Gathering Facts] ******************************************************************************************************************************************************************************
 ok: [ub]
 ok: [el]
 
-TASK [Unarchive vector on managed hosts] ***************************************************************************************************************************************
-fatal: [ub]: FAILED! => {"changed": false, "msg": "Failed to find handler for \"/home/lex/.ansible/tmp/ansible-tmp-1662587393.6665561-318553-143074424667274/source\". Make sure the required command to extract the file is installed. Command \"/usr/bin/tar\" could not handle archive. Unable to find required 'unzip' or 'zipinfo' binary in the path."}
-fatal: [el]: FAILED! => {"changed": false, "msg": "Failed to find handler for \"/home/lex/.ansible/tmp/ansible-tmp-1662587393.666445-318552-219652579303334/source\". Make sure the required command to extract the file is installed. Command \"/usr/bin/unzip\" could not handle archive. Command \"/usr/bin/gtar\" could not handle archive."}
-
-PLAY RECAP *********************************************************************************************************************************************************************
-el                         : ok=4    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
-ub                         : ok=3    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
-
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ ansible-playbook -i inventory/prod.yml examp.yml --diff
-
-PLAY [Get archive] *************************************************************************************************************************************************************
-
-TASK [Gathering Facts] *********************************************************************************************************************************************************
+TASK [Create Directory] *****************************************************************************************************************************************************************************
 ok: [el]
 ok: [ub]
 
-TASK [Download Archive] ********************************************************************************************************************************************************
-ok: [el -> localhost]
-
-TASK [Create Directory] ********************************************************************************************************************************************************
-ok: [el]
-ok: [ub]
-
-TASK [Copy Archive] ************************************************************************************************************************************************************
-ok: [el]
-ok: [ub]
-
-TASK [Unarchive vector on managed hosts] ***************************************************************************************************************************************
+TASK [Download Archive] *****************************************************************************************************************************************************************************
 ok: [ub]
 ok: [el]
 
-TASK [Template it] *************************************************************************************************************************************************************
+TASK [Unarchive vector on managed hosts] ************************************************************************************************************************************************************
+ok: [ub]
+ok: [el]
+
+TASK [Template it] **********************************************************************************************************************************************************************************
 --- before: ./vector/vector.cfg
-+++ after: /home/alex/.ansible/tmp/ansible-local-319027yz6thx6o/tmpwky8bf6u/vector.cfg.j2
-@@ -1,4 +1,3 @@
++++ after: /home/alex/.ansible/tmp/ansible-local-68659eiru5cxa/tmp3a9mcizf/vector.cfg.j2
+@@ -1,3 +1,4 @@
  Абсолютно любой текст
  У меня вектор версии 0.24.0
  Test message
--PukOFF
-\ No newline at end of file
-
-changed: [el]
---- before: ./vector/vector.cfg
-+++ after: /home/alex/.ansible/tmp/ansible-local-319027yz6thx6o/tmp4ecbtb9_/vector.cfg.j2
-@@ -1,4 +1,3 @@
- Абсолютно любой текст
- У меня вектор версии 0.24.0
- Test message
--PukOFF
++PukOFF
 \ No newline at end of file
 
 changed: [ub]
+--- before: ./vector/vector.cfg
++++ after: /home/alex/.ansible/tmp/ansible-local-68659eiru5cxa/tmp6b0l26h4/vector.cfg.j2
+@@ -1,3 +1,4 @@
+ Абсолютно любой текст
+ У меня вектор версии 0.24.0
+ Test message
++PukOFF
+\ No newline at end of file
 
-PLAY RECAP *********************************************************************************************************************************************************************
-el                         : ok=6    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+changed: [el]
+
+PLAY RECAP ******************************************************************************************************************************************************************************************
+el                         : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ub                         : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$
+alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ 
 ```
 ---
 
@@ -245,33 +224,30 @@ alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$
 ```yaml
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$ ansible-playbook -i inventory/prod.yml examp.yml --diff
 
-PLAY [Get archive] *************************************************************************************************************************************************************
+PLAY [Get archive] **********************************************************************************************************************************************************************************
 
-TASK [Gathering Facts] *********************************************************************************************************************************************************
+TASK [Gathering Facts] ******************************************************************************************************************************************************************************
 ok: [el]
 ok: [ub]
 
-TASK [Download Archive] ********************************************************************************************************************************************************
-ok: [el -> localhost]
-
-TASK [Create Directory] ********************************************************************************************************************************************************
+TASK [Create Directory] *****************************************************************************************************************************************************************************
 ok: [el]
 ok: [ub]
 
-TASK [Copy Archive] ************************************************************************************************************************************************************
+TASK [Download Archive] *****************************************************************************************************************************************************************************
+ok: [ub]
+ok: [el]
+
+TASK [Unarchive vector on managed hosts] ************************************************************************************************************************************************************
 ok: [el]
 ok: [ub]
 
-TASK [Unarchive vector on managed hosts] ***************************************************************************************************************************************
+TASK [Template it] **********************************************************************************************************************************************************************************
 ok: [el]
 ok: [ub]
 
-TASK [Template it] *************************************************************************************************************************************************************
-ok: [el]
-ok: [ub]
-
-PLAY RECAP *********************************************************************************************************************************************************************
-el                         : ok=6    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+PLAY RECAP ******************************************************************************************************************************************************************************************
+el                         : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ub                         : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 alex@AlexPC:~/GitHub/DevOps/CI/08-ansible-02-playbook/playbook$
