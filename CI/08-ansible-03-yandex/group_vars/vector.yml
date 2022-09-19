@@ -7,14 +7,15 @@ vector_config:
       type: file
       ignore_older_secs: 600
       include:
-        - /home/lex/logs/*.log
+        - /home/alex/logs/*.log
       read_from: beginning
   sinks:
     to_clickhouse:
+      type: clickhouse
       inputs:
         - our_log
       database: custom
-      endpoint: http://51.250.104.225:8123
+      endpoint: http://51.250.100.87:8123
       table: my_table
       compression: gzip
       healthcheck: false
