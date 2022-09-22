@@ -6,8 +6,8 @@ clickhouse:
 lighthouse:
   hosts:
     lighthouse-01:
-      ansible_host: 158.160.7.65
+      ansible_host: 84.252.137.252
 vector:
   hosts:
     vector-01:
-      ansible_host: 51.250.98.229
+      ansible_host: 84.252.139.30

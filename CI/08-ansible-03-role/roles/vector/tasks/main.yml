@@ -1,0 +1,14 @@
+---
+- name: Install Vector
+  become: true
+  ansible.builtin.yum:
+    name: "{{ vector_url }}"
+    state: present
+- name: Configure Vector
+  include_tasks: configure.yml
+- name: Vector | Start Service
+  become: true
+  ansible.builtin.systemd:
+    name: vector
+    state: started
+    daemon_reload: true
