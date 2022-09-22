@@ -1,0 +1,7 @@
+---
+- name: Add nginx task
+  import_tasks: install/nginx.yml
+
+- name: Add lighthouse task
+  import_tasks: install/lighthouse.yml
+
