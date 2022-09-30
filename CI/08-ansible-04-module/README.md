@@ -1,188 +1,143 @@
-# Домашнее задание к занятию "08.04 Создание собственных modules"
+# Домашнее задание к занятию "08.05 Тестирование Roles"
 
 ## Подготовка к выполнению
-1. Создайте пустой публичных репозиторий в любом своём проекте: `my_own_collection`
-2. Скачайте репозиторий ansible: `git clone https://github.com/ansible/ansible.git` по любому удобному вам пути
-3. Зайдите в директорию ansible: `cd ansible`
-4. Создайте виртуальное окружение: `python3 -m venv venv`
-5. Активируйте виртуальное окружение: `. venv/bin/activate`. Дальнейшие действия производятся только в виртуальном окружении
-6. Установите зависимости `pip install -r requirements.txt`
-7. Запустить настройку окружения `. hacking/env-setup`
-8. Если все шаги прошли успешно - выйти из виртуального окружения `deactivate`
-9. Ваше окружение настроено, для того чтобы запустить его, нужно находиться в директории `ansible` и выполнить конструкцию `. venv/bin/activate && . hacking/env-setup`
+1. Установите molecule: `pip3 install "molecule==3.5.2"`
+
+---
+```bash
+mint@mint:~$ pip3 list | grep molecule
+molecule              3.5.2
+mint@mint:~$ 
+```
+---
+
+2. Выполните `docker pull aragast/netology:latest` -  это образ с podman, tox и несколькими пайтонами (3.7 и 3.9) внутри
+
+---
+```bash
+mint@mint:~$ sudo docker pull aragast/netology:latest
+latest: Pulling from aragast/netology
+f70d60810c69: Pull complete 
+545277d80005: Pull complete 
+3787740a304b: Pull complete 
+8099be4bd6d4: Pull complete 
+78316366859b: Pull complete 
+a887350ff6d8: Pull complete 
+8ab90b51dc15: Pull complete 
+14617a4d32c2: Pull complete 
+b868affa868e: Pull complete 
+1e0b58337306: Pull complete 
+9167ab0cbb7e: Pull complete 
+907e71e165dd: Pull complete 
+6025d523ea47: Pull complete 
+6084c8fa3ce3: Pull complete 
+cffe842942c7: Pull complete 
+Digest: sha256:aa756f858732773c37e443ee13b46b0925bab33775709417e581d99948c08efc
+Status: Downloaded newer image for aragast/netology:latest
+docker.io/aragast/netology:latest
+mint@mint:~$
+```
+---
+
 
 ## Основная часть
 
-Наша цель - написать собственный module, который мы можем использовать в своей role, через playbook. Всё это должно быть собрано в виде collection и отправлено в наш репозиторий.
+Наша основная цель - настроить тестирование наших ролей. Задача: сделать сценарии тестирования для vector. Ожидаемый результат: все сценарии успешно проходят тестирование ролей.
 
-1. В виртуальном окружении создать новый `my_own_module.py` файл
-2. Наполнить его содержимым:
-```python
-#!/usr/bin/python
+### Molecule
 
-# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+1. Запустите  `molecule test -s centos8` внутри корневой директории clickhouse-role, посмотрите на вывод команды.
 
-DOCUMENTATION = r'''
 ---
-module: my_test
+```bash
+mint@mint:~/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse$ molecule test -s centos_8
+INFO     centos_8 scenario test matrix: dependency, lint, cleanup, destroy, syntax, create, prepare, converge, idempotence, side_effect, verify, cleanup, destroy
+INFO     Performing prerun...
+INFO     Set ANSIBLE_LIBRARY=/root/.cache/ansible-compat/7e099f/modules:/root/.ansible/plugins/modules:/usr/share/ansible/plugins/modules
+INFO     Set ANSIBLE_COLLECTIONS_PATH=/root/.cache/ansible-compat/7e099f/collections:/root/.ansible/collections:/usr/share/ansible/collections
+INFO     Set ANSIBLE_ROLES_PATH=/root/.cache/ansible-compat/7e099f/roles:/root/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/hosts.yml linked to /root/.cache/molecule/clickhouse/centos_8/inventory/hosts
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/group_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/group_vars
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/host_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/host_vars
+INFO     Running centos_8 > dependency
+INFO     Running ansible-galaxy collection install -v community.docker:>=1.9.1
+WARNING  Skipping, missing the requirements file.
+WARNING  Skipping, missing the requirements file.
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/hosts.yml linked to /root/.cache/molecule/clickhouse/centos_8/inventory/hosts
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/group_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/group_vars
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/host_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/host_vars
+INFO     Running centos_8 > lint
+COMMAND: yamllint .
+ansible-lint
+flake8
 
-short_description: This is my test module
+/bin/bash: line 1: yamllint: command not found
+/bin/bash: line 2: ansible-lint: command not found
+/bin/bash: line 3: flake8: command not found
+CRITICAL Lint failed with error code 127
+WARNING  An error occurred during the test sequence action: 'lint'. Cleaning up.
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/hosts.yml linked to /root/.cache/molecule/clickhouse/centos_8/inventory/hosts
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/group_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/group_vars
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/host_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/host_vars
+INFO     Running centos_8 > cleanup
+WARNING  Skipping, cleanup playbook not configured.
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/hosts.yml linked to /root/.cache/molecule/clickhouse/centos_8/inventory/hosts
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/group_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/group_vars
+INFO     Inventory /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/clickhouse/molecule/centos_8/../resources/inventory/host_vars/ linked to /root/.cache/molecule/clickhouse/centos_8/inventory/host_vars
+INFO     Running centos_8 > destroy
+INFO     Sanity checks: 'docker'
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.0"
+PLAY [Destroy] *****************************************************************
 
-description: This is my longer description explaining my test module.
+TASK [Destroy molecule instance(s)] ********************************************
+changed: [localhost] => (item=centos_8)
 
-options:
-    name:
-        description: This is the message to send to the test module.
-        required: true
-        type: str
-    new:
-        description:
-            - Control to demo if the result of this module is changed or not.
-            - Parameter description can be a list as well.
-        required: false
-        type: bool
-# Specify this value according to your collection
-# in format of namespace.collection.doc_fragment_name
-extends_documentation_fragment:
-    - my_namespace.my_collection.my_doc_fragment_name
+TASK [Wait for instance(s) deletion to complete] *******************************
+FAILED - RETRYING: [localhost]: Wait for instance(s) deletion to complete (300 retries left).
+ok: [localhost] => (item=centos_8)
 
-author:
-    - Your Name (@yourGitHubHandle)
-'''
+TASK [Delete docker networks(s)] ***********************************************
 
-EXAMPLES = r'''
-# Pass in a message
-- name: Test with a message
-  my_namespace.my_collection.my_test:
-    name: hello world
+PLAY RECAP *********************************************************************
+localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
 
-# pass in a message and have changed true
-- name: Test with a message and changed output
-  my_namespace.my_collection.my_test:
-    name: hello world
-    new: true
+INFO     Pruning extra files from scenario ephemeral directory
 
-# fail the module
-- name: Test failure of the module
-  my_namespace.my_collection.my_test:
-    name: fail me
-'''
-
-RETURN = r'''
-# These are examples of possible return values, and in general should use other names for return values.
-original_message:
-    description: The original name param that was passed in.
-    type: str
-    returned: always
-    sample: 'hello world'
-message:
-    description: The output message that the test module generates.
-    type: str
-    returned: always
-    sample: 'goodbye'
-'''
-
-from ansible.module_utils.basic import AnsibleModule
-
-
-def run_module():
-    # define available arguments/parameters a user can pass to the module
-    module_args = dict(
-        name=dict(type='str', required=True),
-        new=dict(type='bool', required=False, default=False)
-    )
-
-    # seed the result dict in the object
-    # we primarily care about changed and state
-    # changed is if this module effectively modified the target
-    # state will include any data that you want your module to pass back
-    # for consumption, for example, in a subsequent task
-    result = dict(
-        changed=False,
-        original_message='',
-        message=''
-    )
-
-    # the AnsibleModule object will be our abstraction working with Ansible
-    # this includes instantiation, a couple of common attr would be the
-    # args/params passed to the execution, as well as if the module
-    # supports check mode
-    module = AnsibleModule(
-        argument_spec=module_args,
-        supports_check_mode=True
-    )
-
-    # if the user is working with this module in only check mode we do not
-    # want to make any changes to the environment, just return the current
-    # state with no modifications
-    if module.check_mode:
-        module.exit_json(**result)
-
-    # manipulate or modify the state as needed (this is going to be the
-    # part where your module will do what it needs to do)
-    result['original_message'] = module.params['name']
-    result['message'] = 'goodbye'
-
-    # use whatever logic you need to determine whether or not this module
-    # made any modifications to your target
-    if module.params['new']:
-        result['changed'] = True
-
-    # during the execution of the module, if there is an exception or a
-    # conditional state that effectively causes a failure, run
-    # AnsibleModule.fail_json() to pass in the message and the result
-    if module.params['name'] == 'fail me':
-        module.fail_json(msg='You requested this to fail', **result)
-
-    # in the event of a successful module execution, you will want to
-    # simple AnsibleModule.exit_json(), passing the key/value results
-    module.exit_json(**result)
-
-
-def main():
-    run_module()
-
-
-if __name__ == '__main__':
-    main()
 ```
-Или возьмите данное наполнение из [статьи](https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_general.html#creating-a-module).
+---
+2. Перейдите в каталог с ролью vector-role и создайте сценарий тестирования по умолчанию при помощи `molecule init scenario --driver-name docker`.
 
-3. Заполните файл в соответствии с требованиями ansible так, чтобы он выполнял основную задачу: module должен создавать текстовый файл на удалённом хосте по пути, определённом в параметре `path`, с содержимым, определённым в параметре `content`.
-4. Проверьте module на исполняемость локально.
-5. Напишите single task playbook и используйте module в нём.
-6. Проверьте через playbook на идемпотентность.
-7. Выйдите из виртуального окружения.
-8. Инициализируйте новую collection: `ansible-galaxy collection init my_own_namespace.my_own_collection`
-9. В данную collection перенесите свой module в соответствующую директорию.
-10. Single task playbook преобразуйте в single task role и перенесите в collection. У role должны быть default всех параметров module
-11. Создайте playbook для использования этой role.
-12. Заполните всю документацию по collection, выложите в свой репозиторий, поставьте тег `1.0.0` на этот коммит.
-13. Создайте .tar.gz этой collection: `ansible-galaxy collection build` в корневой директории collection.
-14. Создайте ещё одну директорию любого наименования, перенесите туда single task playbook и архив c collection.
-15. Установите collection из локального архива: `ansible-galaxy collection install <archivename>.tar.gz`
-16. Запустите playbook, убедитесь, что он работает.
-17. В ответ необходимо прислать ссылку на репозиторий с collection
+---
+```bash
+mint@mint:~/DevOps/DevOps/CI/08-ansible-04-module/roles/vector$ molecule init scenario --driver-name docker
+INFO     Initializing new scenario default...
+INFO     Initialized scenario in /home/mint/DevOps/DevOps/CI/08-ansible-04-module/roles/vector/molecule/default successfully.
+mint@mint:~/DevOps/DevOps/CI/08-ansible-04-module/roles/vector$
+```
+---
+
+
+3. Добавьте несколько разных дистрибутивов (centos:8, ubuntu:latest) для инстансов и протестируйте роль, исправьте найденные ошибки, если они есть.
+4. Добавьте несколько assert'ов в verify.yml файл для  проверки работоспособности vector-role (проверка, что конфиг валидный, проверка успешности запуска, etc). Запустите тестирование роли повторно и проверьте, что оно прошло успешно.
+5. Добавьте новый тег на коммит с рабочим сценарием в соответствии с семантическим версионированием.
+
+### Tox
+
+1. Добавьте в директорию с vector-role файлы из [директории](./example)
+2. Запустите `docker run --privileged=True -v <path_to_repo>:/opt/vector-role -w /opt/vector-role -it aragast/netology:latest /bin/bash`, где path_to_repo - путь до корня репозитория с vector-role на вашей файловой системе.
+3. Внутри контейнера выполните команду `tox`, посмотрите на вывод.
+5. Создайте облегчённый сценарий для `molecule` с драйвером `molecule_podman`. Проверьте его на исполнимость.
+6. Пропишите правильную команду в `tox.ini` для того чтобы запускался облегчённый сценарий.
+8. Запустите команду `tox`. Убедитесь, что всё отработало успешно.
+9. Добавьте новый тег на коммит с рабочим сценарием в соответствии с семантическим версионированием.
+
+После выполнения у вас должно получится два сценария molecule и один tox.ini файл в репозитории. Ссылка на репозиторий являются ответами на домашнее задание. Не забудьте указать в ответе теги решений Tox и Molecule заданий.
 
 ## Необязательная часть
 
-1. Используйте свой полёт фантазии: Создайте свой собственный module для тех roles, что мы делали в рамках предыдущих лекций.
-2. Соберите из roles и module отдельную collection.
-3. Создайте новый репозиторий и выложите новую collection туда.
-
-Если идей нет, но очень хочется попробовать что-то реализовать: реализовать module восстановления из backup elasticsearch.
-
----
-
-### Как оформить ДЗ?
-
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+1. Проделайте схожие манипуляции для создания роли lighthouse.
+2. Создайте сценарий внутри любой из своих ролей, который умеет поднимать весь стек при помощи всех ролей.
+3. Убедитесь в работоспособности своего стека. Создайте отдельный verify.yml, который будет проверять работоспособность интеграции всех инструментов между ними.
+4. Выложите свои roles в репозитории. В ответ приведите ссылки.
 
 ---
