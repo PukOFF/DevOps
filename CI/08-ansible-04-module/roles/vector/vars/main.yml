@@ -1,4 +1,5 @@
 ---
-vector_url: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.x86_64.rpm
+#vector_url: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.x86_64.rpm
+vector_url: https://packages.timber.io/vector/0.21.1/vector_0.21.1-1_amd64.deb
+#https://packages.timber.io/vector/0.21.1/vector_0.21.1-1_amd64.deb
 vector_version: 0.21.1
-

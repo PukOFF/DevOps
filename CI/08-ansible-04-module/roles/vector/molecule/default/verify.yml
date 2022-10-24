@@ -5,6 +5,15 @@
   hosts: all
   gather_facts: false
   tasks:
+  - name: Vector valid config
+    raw: vector validate /etc/vector/vector.toml
+    register: validate 
+  - name: Debug Message
+    debug:
+      msg: '{{ validate.stdout_lines[-1].strip() }}'
+  
   - name: Example assertion
     assert:
-      that: true
+      that: 
+        - "Validated"
+        #- '{{ validate.stdout_lines[-1].strip() }}' == 
