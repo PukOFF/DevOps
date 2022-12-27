@@ -29,10 +29,19 @@
 
 Решение домашнего задания - скриншот веб-интерфейса grafana со списком подключенных Datasource.
 
+---
+
+<p align="center">
+  <img src="./images/Datasource.png">
+</p>
+
+---
+
 ## Задание 2
 Изучите самостоятельно ресурсы:
-- [promql-for-humans](https://timber.io/blog/promql-for-humans/#cpu-usage-by-instance)
-- [understanding prometheus cpu metrics](https://www.robustperception.io/understanding-machine-cpu-usage)
+- [PromQL query to find CPU and memory](https://stackoverflow.com/questions/62770744/promql-query-to-find-cpu-and-memory-used-for-the-last-week)
+- [PromQL tutorial](https://valyala.medium.com/promql-tutorial-for-beginners-9ab455142085)
+- [Understanding Prometheus CPU metrics](https://www.robustperception.io/understanding-machine-cpu-usage)
 
 Создайте Dashboard и в ней создайте следующие Panels:
 - Утилизация CPU для nodeexporter (в процентах, 100-idle)
@@ -41,6 +50,30 @@
 - Количество места на файловой системе
 
 Для решения данного ДЗ приведите promql запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
+
+---
+
+**CPU**
+
+    100 - (avg by (instance) (rate(node_cpu_seconds_total{job="nodeexporter",mode="idle"}[5m])) * 100)
+
+**CPU Load 1,5,15**
+
+    node_load1, node_load5, node_load15
+
+**Disk avaliable**
+
+    node_filesystem_avail_bytes/1024/1024/1024
+
+**Free Memory**
+
+    node_memory_MemFree_bytes/1024/1024/1024
+
+<p align="center">
+  <img src="./images/Dashboard.png">
+</p>
+
+---
 
 ## Задание 3
 Создайте для каждой Dashboard подходящее правило alert (можно обратиться к первой лекции в блоке "Мониторинг").

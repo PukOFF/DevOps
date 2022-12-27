@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   prometheus:
+    hostname: prometheus
     image: prom/prometheus:v2.24.1
     container_name: prometheus
     volumes:
@@ -16,12 +17,15 @@ services:
     restart: unless-stopped
     depends_on:
       - nodeexporter
+    ports:
+      - 9090:9090
     expose:
       - 9090
     networks:
       - monitor-net
 
   nodeexporter:
+    hostname: nodeexporter
     image: prom/node-exporter:v1.0.1
     container_name: nodeexporter
     volumes:
@@ -41,6 +45,7 @@ services:
 
 
   grafana:
+    hostname: grafana
     image: grafana/grafana:7.4.0
     container_name: grafana
     volumes:
