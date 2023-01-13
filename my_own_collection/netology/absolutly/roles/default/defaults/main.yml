@@ -1,4 +1,4 @@
 ---
-path: './my_role_test_file.txt'
+path: 'my_role_test_file.txt'
 content: 'Testing role content'
 # defaults file for default
