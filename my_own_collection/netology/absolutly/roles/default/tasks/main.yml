@@ -1,0 +1,6 @@
+---
+- name: Create file
+  my_own_module:
+    path: "{{ path }}"
+    content: "{{ content }}"
+# tasks file for default

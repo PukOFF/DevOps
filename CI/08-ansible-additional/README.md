@@ -159,10 +159,84 @@ if __name__ == '__main__':
 4. Проверьте module на исполняемость локально.
 5. Напишите single task playbook и используйте module в нём.
 6. Проверьте через playbook на идемпотентность.
+
+---
+```yml
+(venv) alex@alexPC:~/Github/DevOps/my_own_collection/ansible$ ansible-playbook test_playbook.yml 
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features
+under development. This is a rapidly changing source of code and can become unstable at any point.
+[WARNING]: No inventory was parsed, only implicit localhost is available
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+PLAY [Test module my_own_module] *******************************************************************************************************************************************
+
+TASK [Gathering Facts] *****************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [Testing] *************************************************************************************************************************************************************
+changed: [localhost]
+
+PLAY RECAP *****************************************************************************************************************************************************************
+localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+(venv) alex@alexPC:~/Github/DevOps/my_own_collection/ansible$ ansible-playbook test_playbook.yml 
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features
+under development. This is a rapidly changing source of code and can become unstable at any point.
+[WARNING]: No inventory was parsed, only implicit localhost is available
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+PLAY [Test module my_own_module] *******************************************************************************************************************************************
+
+TASK [Gathering Facts] *****************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [Testing] *************************************************************************************************************************************************************
+ok: [localhost]
+
+PLAY RECAP *****************************************************************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+(venv) alex@alexPC:~/Github/DevOps/my_own_collection/ansible$ 
+```
+---
+
 7. Выйдите из виртуального окружения.
 8. Инициализируйте новую collection: `ansible-galaxy collection init my_own_namespace.yandex_cloud_elk`
-9. В данную collection перенесите свой module в соответствующую директорию.
+
+---
+```bash
+alex@alexPC:~/Github/DevOps/my_own_collection$ ansible-galaxy collection init netology.absolutly
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features
+under development. This is a rapidly changing source of code and can become unstable at any point.
+- Collection netology.absolutly was created successfully
+```
+---
+
+9.  В данную collection перенесите свой module в соответствующую директорию.
 10. Single task playbook преобразуйте в single task role и перенесите в collection. У role должны быть default всех параметров module
+
+---
+```bash
+alex@alexPC:~/Github/DevOps/my_own_collection/netology/absolutly$ cat site.yml 
+---
+- name: Test module my_own_module
+  hosts: localhost
+  tasks:
+    - name: Testing
+      my_own_module:
+        path: './my_test_file.txt'
+        content: 'Testing playbook content'
+
+alex@alexPC:~/Github/DevOps/my_own_collection/netology/absolutly$ 
+
+
+alex@alexPC:~/Github/DevOps/my_own_collection/netology/absolutly/roles$ ansible-galaxy init default
+[WARNING]: You are running the development version of Ansible. You should only run Ansible from "devel" if you are modifying the Ansible engine, or trying out features
+under development. This is a rapidly changing source of code and can become unstable at any point.
+- Role default was created successfully
+```
+---
+
 11. Создайте playbook для использования этой role.
 12. Заполните всю документацию по collection, выложите в свой репозиторий, поставьте тег `1.0.0` на этот коммит.
 13. Создайте .tar.gz этой collection: `ansible-galaxy collection build` в корневой директории collection.
