@@ -224,7 +224,7 @@ alex@alexPC:~/Github/DevOps/my_own_collection/netology/absolutly$ cat site.yml
   tasks:
     - name: Testing
       my_own_module:
-        path: './my_test_file.txt'
+        path: 'my_test_file.txt'
         content: 'Testing playbook content'
 
 alex@alexPC:~/Github/DevOps/my_own_collection/netology/absolutly$ 
