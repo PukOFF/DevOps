@@ -54,13 +54,6 @@ docker ps
   <img src="./images/docker.png">
 </p>
 
-<p align="center">
-  <img src="./images/kibana.png">
-</p>
-
-
-
-
 ---
 
 ## Задание 2
@@ -74,7 +67,18 @@ docker ps
 В манифесте директории help также приведенно dummy приложение, которое генерирует рандомные события в stdout контейнера.
 Данные логи должны порождать индекс logstash-* в elasticsearch. Если данного индекса нет - воспользуйтесь советами 
 и источниками из раздела "Дополнительные ссылки" данного ДЗ.
- 
+
+<p align="center">
+  <img src="./images/index-pattern1.png">
+</p>
+
+---
+
+<p align="center">
+  <img src="./images/index-patterns.png">
+</p>
+
+
 ---
 
 ### Как оформить ДЗ?

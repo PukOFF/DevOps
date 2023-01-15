@@ -2,7 +2,6 @@ version: '2.2'
 services:
 
   es-hot:
-    #image: docker.elastic.co/elasticsearch/elasticsearch:7.11.8
     image: elasticsearch:7.17.8
     container_name: es-hot
     environment:
@@ -19,8 +18,8 @@ services:
         soft: -1
         hard: -1
       nofile:
-        soft: 262144
-        hard: 262144
+        soft: 65536
+        hard: 65536
     ports:
       - 9200:9200
     networks:
@@ -29,7 +28,6 @@ services:
       - es-warm
 
   es-warm:
-    #image: docker.elastic.co/elasticsearch/elasticsearch:7.11.8
     image: elasticsearch:7.17.8
     container_name: es-warm
     environment:
@@ -41,19 +39,17 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - data02:/usr/share/elasticsearch/data:Z
-    mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
         hard: -1
       nofile:
-        soft: 65535
-        hard: 65535
+        soft: 65536
+        hard: 65536
     networks:
       - elastic
 
   kibana:
-    #image: docker.elastic.co/kibana/kibana:7.11.8
     image: kibana:7.17.8
     container_name: kibana
     ports:
@@ -68,7 +64,7 @@ services:
       - es-warm
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.3.2
+    image: logstash:7.17.8
     container_name: logstash
     ports:
       - 5046:5046
@@ -82,10 +78,12 @@ services:
       - es-warm
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:7.2.0
+    image: "docker.elastic.co/beats/filebeat:7.17.8"
     container_name: filebeat
     privileged: true
     user: root
+    networks:
+      - elastic
     volumes:
       - ./configs/filebeat.yml:/usr/share/filebeat/filebeat.yml:Z
       - /var/lib/docker:/var/lib/docker:Z
