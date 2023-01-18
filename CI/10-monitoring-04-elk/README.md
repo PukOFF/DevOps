@@ -69,13 +69,13 @@ docker ps
 и источниками из раздела "Дополнительные ссылки" данного ДЗ.
 
 <p align="center">
-  <img src="./images/index-pattern1.png">
+  <img src="./images/index-patterns.png">
 </p>
 
 ---
 
 <p align="center">
-  <img src="./images/index-patterns.png">
+  <img src="./images/discover.png">
 </p>
 
 
